@@ -1,0 +1,187 @@
+// Prisma schema for PrimePro x Fuelo Tax Invoice & Billing System
+// Datasource: MySQL (Hostinger hPanel database).
+// Set DATABASE_URL in your .env to your Hostinger MySQL connection string.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+// ---------- AUTH ----------
+
+model Admin {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String // bcrypt hash
+  role      String   @default("ADMIN")
+  createdAt DateTime @default(now())
+}
+
+// ---------- COMPANY SETTINGS (editable from dashboard) ----------
+
+model CompanySettings {
+  id String @id @default("singleton")
+
+  // PrimePro (left column)
+  primeproName      String @default("PrimePro Technologies AI LLC")
+  primeproTagline   String @default("USA Headquarters")
+  primeproAddress   String @default("8 The Green, Suite B, Dover, Delaware 19901")
+  primeproRegistration String @default("LLC · Delaware, USA")
+  primeproEIN       String @default("36-5171970")
+  primeproPhone     String @default("+1 302 719 6746")
+  primeproWhatsapp  String @default("+1 302 719 6746")
+  primeproEmail     String @default("hello@primepro.ai")
+  primeproLinkedin  String @default("")
+  primeproLogoUrl   String @default("")
+
+  // Fuelo (right column)
+  fueloName         String @default("Fuelo Technologies OPC Pvt Ltd")
+  fueloTagline      String @default("India Office")
+  fueloCIN          String @default("U72900KA2022OPC166090")
+  fueloGSTIN        String @default("29AAFCE2179R1ZT")
+  fueloAddress      String @default("Kasturi Nagar, Outer Ring Road, Bengaluru — 560043")
+  fueloPhone        String @default("+91 88888 57588")
+  fueloWhatsapp     String @default("+91 88888 57588")
+  fueloEmail        String @default("support@primepro.ai")
+  fueloLinkedin     String @default("")
+  fueloLogoUrl      String @default("")
+
+  // Payment & signature
+  upiId             String @default("yourupi@bank")
+  qrCodeUrl         String @default("")
+  signatureUrl      String @default("")
+  signatoryLine1    String @default("Authorised Signature for")
+  signatoryLine2    String @default("Fuelo Technologies OPC Pvt Ltd")
+
+  defaultGstPercent Float  @default(18)
+  footerNote        String @default("Thank you for choosing us. This is a computer generated invoice.")
+
+  updatedAt DateTime @updatedAt
+}
+
+// ---------- SERVICES / PACKAGES / TERMS ----------
+
+model ServiceCategory {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  description String    @default("")
+  sortOrder   Int       @default(0)
+  isActive    Boolean   @default(true)
+  packages    Package[]
+  terms       TermsAndConditions?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Package {
+  id          String          @id @default(cuid())
+  name        String
+  price       Float
+  description String          @default("")
+  isCustom    Boolean         @default(false) // "Custom Price" entries
+  sortOrder   Int             @default(0)
+  isActive    Boolean         @default(true)
+  category    ServiceCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId  String
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+}
+
+model TermsAndConditions {
+  id         String          @id @default(cuid())
+  category   ServiceCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId String          @unique
+  content    String          @db.Text // newline separated clauses, editable rich text/markdown-lite
+  updatedAt  DateTime        @updatedAt
+}
+
+model GeneralTerms {
+  id      String @id @default("singleton")
+  content String @db.Text @default("1. GST is calculated at 18% unless otherwise specified on the invoice.\n2. Payments are due according to the invoice due date.\n3. Additional services requested after confirmation may incur additional charges.\n4. Customer is responsible for providing accurate information and required access.")
+}
+
+// ---------- CUSTOMERS ----------
+
+model Customer {
+  id             String    @id @default(cuid())
+  companyName    String
+  contactPerson  String    @default("")
+  billingAddress String
+  city           String
+  state          String
+  pincode        String
+  country        String    @default("India")
+  phone          String
+  email          String?
+  gstin          String    @default("")
+  placeOfSupply  String
+  invoices       Invoice[]
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+// ---------- INVOICES ----------
+
+enum PaymentStatus {
+  UNPAID
+  PARTIALLY_PAID
+  PAID
+  OVERDUE
+}
+
+model Invoice {
+  id             String        @id @default(cuid())
+  invoiceNumber  String        @unique
+  invoiceDate    DateTime
+  dueDate        DateTime
+  paymentStatus  PaymentStatus @default(UNPAID)
+
+  customer       Customer      @relation(fields: [customerId], references: [id])
+  customerId     String
+
+  lineItems      InvoiceLineItem[]
+
+  gstEnabled     Boolean  @default(true)
+  gstPercent     Float    @default(18)
+
+  subtotal       Float    @default(0)
+  discountAmount Float    @default(0)
+  taxableAmount  Float    @default(0)
+  gstAmount      Float    @default(0)
+  grandTotal     Float    @default(0)
+  amountPaid     Float    @default(0)
+  balanceDue     Float    @default(0)
+  amountInWords  String   @default("")
+
+  paymentMethod       String @default("UPI")
+  upiId               String @default("")
+  transactionRef      String @default("")
+
+  selectedCategoryIds String @default("") // comma separated, used to compose page-2 terms
+  notes               String @default("") @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model InvoiceLineItem {
+  id            String  @id @default(cuid())
+  invoice       Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  invoiceId     String
+
+  categoryName  String
+  packageName   String
+  description   String  @default("")
+  quantity      Float   @default(1)
+  rate          Float
+  isCustomPrice Boolean @default(false)
+  discount      Float   @default(0)
+  gstPercent    Float   @default(18)
+  total         Float
+
+  sortOrder     Int     @default(0)
+}
