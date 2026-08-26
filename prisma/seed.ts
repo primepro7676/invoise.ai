@@ -2,19 +2,28 @@ import "dotenv/config";
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
+
+// =========================================================
+// DATABASE CONNECTION
+// =========================================================
 
 const adapter = new PrismaMariaDb({
   host: process.env.DATABASE_HOST || "localhost",
-  port: Number(process.env.DATABASE_PORT || 3306),
-  user: process.env.DATABASE_USER || "root",
+  port: Number(process.env.DATABASE_PORT || "3306"),
+  user: process.env.DATABASE_USER || "u509897240_sales",
   password: process.env.DATABASE_PASSWORD || "",
-  database: process.env.DATABASE_NAME || "generateinvoic",
+  database: process.env.DATABASE_NAME || "u509897240_myinvoise",
   connectionLimit: 5,
 });
 
 const prisma = new PrismaClient({
   adapter,
 });
+
+// =========================================================
+// MAIN
+// =========================================================
 
 async function main() {
   console.log("");
@@ -70,6 +79,7 @@ async function main() {
   } else {
     admin = await prisma.admin.create({
       data: {
+        id: crypto.randomUUID(),
         name: "Admin",
         email,
         password: hashedPassword,
@@ -386,6 +396,10 @@ async function main() {
   console.log("");
   console.log("==========================================");
 }
+
+// =========================================================
+// RUN SEED
+// =========================================================
 
 main()
   .catch((error) => {
