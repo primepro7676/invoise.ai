@@ -56,29 +56,15 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
   },
 
-  // ===================================================
-  // PRIMEPRO LOGO
-  // ONLY THIS LOGO POSITION HAS BEEN CHANGED
-  // ===================================================
   logoLeft: {
     width: 130,
     height: 52,
     objectFit: "contain",
     alignSelf: "flex-start",
-
-    /*
-     * Moves ONLY the PrimePro logo to align
-     * its visible left edge with USA Headquarters.
-     */
     marginLeft: -34,
-
     marginBottom: 4,
   },
 
-  // ===================================================
-  // FUELO LOGO
-  // UNCHANGED
-  // ===================================================
   logoRight: {
     width: 130,
     height: 52,
@@ -87,10 +73,6 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
 
-  // ===================================================
-  // OFFICE HEADINGS
-  // ONLY THESE TWO ARE BOLD
-  // ===================================================
   officeHeading: {
     fontSize: 8,
     fontWeight: 700,
@@ -98,9 +80,6 @@ const styles = StyleSheet.create({
     marginBottom: 1,
   },
 
-  // ===================================================
-  // NORMAL COMPANY TEXT
-  // ===================================================
   companyLine: {
     fontSize: 8,
     fontWeight: 400,
@@ -127,7 +106,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     paddingVertical: 8,
     paddingHorizontal: 12,
-    marginBottom: 10,
+    marginBottom: 8,
   },
 
   titleText: {
@@ -159,50 +138,77 @@ const styles = StyleSheet.create({
   },
 
   // ===================================================
+  // PACKAGE BANNER
+  // ===================================================
+  packageBanner: {
+    backgroundColor: BRAND.greenLight,
+    borderLeftWidth: 3,
+    borderLeftColor: BRAND.green,
+    paddingVertical: 5,
+    paddingHorizontal: 8,
+    marginBottom: 8,
+    borderRadius: 2,
+  },
+
+  packageBannerTitle: {
+    fontSize: 9.5,
+    fontWeight: 700,
+    color: BRAND.greenDark,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+
+  packageBannerSubtitle: {
+    fontSize: 7.5,
+    color: BRAND.navy,
+    marginTop: 1,
+  },
+
+  // ===================================================
   // BILL TO
   // ===================================================
   billToBox: {
     borderWidth: 1,
     borderColor: BRAND.greenBorder,
     borderRadius: 4,
-    padding: 10,
-    marginBottom: 10,
+    padding: 8,
+    marginBottom: 8,
     width: "55%",
   },
 
   sectionLabel: {
-    fontSize: 8,
+    fontSize: 7.5,
     fontWeight: 700,
     color: BRAND.green,
-    marginBottom: 4,
+    marginBottom: 3,
     textTransform: "uppercase",
     letterSpacing: 0.5,
   },
 
   billToName: {
-    fontSize: 10,
+    fontSize: 9.5,
     fontWeight: 700,
     color: BRAND.navy,
     marginBottom: 2,
   },
 
   billToLine: {
-    fontSize: 8,
+    fontSize: 7.5,
     color: BRAND.navy,
-    lineHeight: 1.4,
+    lineHeight: 1.35,
   },
 
   // ===================================================
   // TABLE
   // ===================================================
   table: {
-    marginBottom: 8,
+    marginBottom: 6,
   },
 
   tableHeader: {
     flexDirection: "row",
     backgroundColor: BRAND.green,
-    paddingVertical: 6,
+    paddingVertical: 5,
     paddingHorizontal: 6,
     borderRadius: 2,
   },
@@ -216,7 +222,7 @@ const styles = StyleSheet.create({
 
   tableRow: {
     flexDirection: "row",
-    paddingVertical: 6,
+    paddingVertical: 5,
     paddingHorizontal: 6,
     borderBottomWidth: 0.5,
     borderBottomColor: "#e2f2eb",
@@ -227,7 +233,7 @@ const styles = StyleSheet.create({
   },
 
   tableCell: {
-    fontSize: 8,
+    fontSize: 7.8,
     color: BRAND.navy,
   },
 
@@ -236,11 +242,11 @@ const styles = StyleSheet.create({
   },
 
   colService: {
-    width: "28%",
+    width: "30%",
   },
 
   colPackage: {
-    width: "16%",
+    width: "20%",
   },
 
   colQty: {
@@ -249,13 +255,8 @@ const styles = StyleSheet.create({
   },
 
   colRate: {
-    width: "14%",
+    width: "18%",
     textAlign: "right",
-  },
-
-  colGst: {
-    width: "10%",
-    textAlign: "center",
   },
 
   colAmount: {
@@ -269,29 +270,52 @@ const styles = StyleSheet.create({
   totalsWrap: {
     flexDirection: "row",
     justifyContent: "flex-end",
-    marginBottom: 8,
+    marginBottom: 6,
   },
 
   totalsBox: {
-    width: "48%",
+    width: "50%",
   },
 
   totalsRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: 3,
+    paddingVertical: 2.5,
     borderBottomWidth: 0.5,
     borderBottomColor: "#e2f2eb",
   },
 
   totalsLabel: {
-    fontSize: 8.5,
+    fontSize: 8,
     color: BRAND.gray,
   },
 
   totalsValue: {
-    fontSize: 8.5,
+    fontSize: 8,
     color: BRAND.navy,
+    fontWeight: 700,
+  },
+
+  discountRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingVertical: 2.5,
+    borderBottomWidth: 0.5,
+    borderBottomColor: "#e2f2eb",
+    backgroundColor: BRAND.greenLight,
+    paddingHorizontal: 4,
+    borderRadius: 2,
+  },
+
+  discountLabel: {
+    fontSize: 8,
+    color: BRAND.greenDark,
+    fontWeight: 700,
+  },
+
+  discountValue: {
+    fontSize: 8,
+    color: BRAND.green,
     fontWeight: 700,
   },
 
@@ -300,19 +324,19 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     backgroundColor: BRAND.green,
     borderRadius: 3,
-    paddingVertical: 6,
+    paddingVertical: 5,
     paddingHorizontal: 8,
-    marginTop: 4,
+    marginTop: 3,
   },
 
   grandTotalLabel: {
-    fontSize: 9.5,
+    fontSize: 9,
     fontWeight: 700,
     color: BRAND.white,
   },
 
   grandTotalValue: {
-    fontSize: 10.5,
+    fontSize: 10,
     fontWeight: 700,
     color: BRAND.white,
   },
@@ -322,20 +346,20 @@ const styles = StyleSheet.create({
   // ===================================================
   wordsBox: {
     backgroundColor: BRAND.greenLight,
-    borderRadius: 4,
-    padding: 8,
-    marginBottom: 10,
+    borderRadius: 3,
+    padding: 6,
+    marginBottom: 6,
   },
 
   wordsLabel: {
-    fontSize: 7,
+    fontSize: 6.5,
     color: BRAND.gray,
     textTransform: "uppercase",
-    marginBottom: 2,
+    marginBottom: 1,
   },
 
   wordsValue: {
-    fontSize: 8.5,
+    fontSize: 8,
     color: BRAND.navy,
     fontWeight: 700,
   },
@@ -346,7 +370,7 @@ const styles = StyleSheet.create({
   bottomRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 6,
+    marginTop: 4,
   },
 
   paymentCol: {
@@ -364,9 +388,9 @@ const styles = StyleSheet.create({
   },
 
   qrImage: {
-    width: 64,
-    height: 64,
-    marginBottom: 4,
+    width: 58,
+    height: 58,
+    marginBottom: 3,
   },
 
   qrCaption: {
@@ -376,8 +400,8 @@ const styles = StyleSheet.create({
   },
 
   signatureImg: {
-    width: 90,
-    height: 34,
+    width: 85,
+    height: 30,
     objectFit: "contain",
     marginBottom: 2,
   },
@@ -386,7 +410,7 @@ const styles = StyleSheet.create({
     fontSize: 7.5,
     color: BRAND.navy,
     textAlign: "right",
-    lineHeight: 1.4,
+    lineHeight: 1.3,
   },
 
   // ===================================================
@@ -394,22 +418,22 @@ const styles = StyleSheet.create({
   // ===================================================
   footer: {
     position: "absolute",
-    bottom: 18,
+    bottom: 16,
     left: 32,
     right: 32,
     textAlign: "center",
-    fontSize: 7,
+    fontSize: 6.8,
     color: BRAND.gray,
     borderTopWidth: 0.5,
     borderTopColor: BRAND.greenBorder,
-    paddingTop: 6,
+    paddingTop: 5,
   },
 
   pageNumber: {
     position: "absolute",
-    bottom: 18,
+    bottom: 16,
     right: 32,
-    fontSize: 7,
+    fontSize: 6.8,
     color: BRAND.gray,
   },
 
@@ -417,42 +441,83 @@ const styles = StyleSheet.create({
   // PAGE 2
   // ===================================================
   termsTitle: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: 700,
     color: BRAND.greenDark,
-    marginBottom: 12,
+    marginBottom: 10,
     textAlign: "center",
     textTransform: "uppercase",
     letterSpacing: 1,
   },
 
   termsSection: {
-    marginBottom: 12,
+    marginBottom: 9,
   },
 
   termsSectionTitle: {
-    fontSize: 9.5,
+    fontSize: 8.8,
     fontWeight: 700,
     color: BRAND.white,
     backgroundColor: BRAND.green,
-    padding: 5,
-    borderRadius: 3,
-    marginBottom: 5,
+    padding: 4,
+    borderRadius: 2,
+    marginBottom: 4,
     textTransform: "uppercase",
   },
 
   termsLine: {
-    fontSize: 8.3,
+    fontSize: 7.8,
     color: BRAND.navy,
-    lineHeight: 1.7,
+    lineHeight: 1.5,
     marginBottom: 1,
+  },
+
+  bulletItem: {
+    flexDirection: "row",
+    marginBottom: 2,
+    paddingLeft: 4,
+  },
+
+  bulletDot: {
+    fontSize: 8,
+    color: BRAND.green,
+    marginRight: 4,
+  },
+
+  bulletText: {
+    fontSize: 7.8,
+    color: BRAND.navy,
+    lineHeight: 1.4,
+    flex: 1,
+  },
+
+  highlightBox: {
+    backgroundColor: BRAND.greenLight,
+    borderWidth: 1,
+    borderColor: BRAND.greenBorder,
+    borderRadius: 3,
+    padding: 6,
+    marginBottom: 8,
+  },
+
+  highlightTitle: {
+    fontSize: 8.5,
+    fontWeight: 700,
+    color: BRAND.greenDark,
+    marginBottom: 2,
+  },
+
+  highlightText: {
+    fontSize: 7.8,
+    color: BRAND.navy,
+    lineHeight: 1.4,
   },
 
   termsFooterCols: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 20,
-    paddingTop: 10,
+    marginTop: 14,
+    paddingTop: 8,
     borderTopWidth: 0.5,
     borderTopColor: BRAND.greenBorder,
   },
@@ -462,16 +527,16 @@ const styles = StyleSheet.create({
   },
 
   termsFooterName: {
-    fontSize: 8,
+    fontSize: 7.8,
     fontWeight: 700,
     color: BRAND.greenDark,
     marginBottom: 2,
   },
 
   termsFooterLine: {
-    fontSize: 7.3,
+    fontSize: 7,
     color: BRAND.gray,
-    lineHeight: 1.5,
+    lineHeight: 1.4,
   },
 });
 
@@ -483,6 +548,15 @@ export interface InvoicePdfProps {
   invoiceDate: string;
   dueDate: string;
   paymentStatus: string;
+
+  // Package & scope details
+  packageTitle?: string;
+  packageSubtitle?: string;
+  platformsIncluded?: string;
+  packageInclusions?: string;
+  paymentTermsText?: string;
+  specialOfferNote?: string;
+  discountReason?: string;
 
   settings: {
     primeproName: string;
@@ -560,7 +634,7 @@ export interface InvoicePdfProps {
 }
 
 // =====================================================
-// MONEY
+// MONEY HELPER
 // =====================================================
 function money(n: number) {
   return `Rs. ${n.toLocaleString("en-IN", {
@@ -575,629 +649,351 @@ function money(n: number) {
 export function InvoiceDocument(props: InvoicePdfProps) {
   const { settings } = props;
 
+  const inclusionBullets = props.packageInclusions
+    ? props.packageInclusions
+        .split("\n")
+        .map((l) => l.trim().replace(/^[•\-\*]\s*/, ""))
+        .filter(Boolean)
+    : [];
+
+  const platformBullets = props.platformsIncluded
+    ? props.platformsIncluded
+        .split("\n")
+        .map((l) => l.trim().replace(/^[•\-\*]\s*/, ""))
+        .filter(Boolean)
+    : [];
+
   return (
     <Document title={`Tax Invoice ${props.invoiceNumber}`}>
-
       {/* =================================================
-          PAGE 1
+          PAGE 1: TAX INVOICE & BREAKDOWN
       ================================================= */}
       <Page size="A4" style={styles.page}>
-
-        {/* =================================================
-            HEADER
-        ================================================= */}
+        {/* HEADER */}
         <View style={styles.headerRow}>
-
-          {/* ===============================================
-              PRIMEPRO - LEFT
-          =============================================== */}
+          {/* PRIMEPRO - LEFT */}
           <View style={styles.companyCol}>
-
-            {/* PRIMEPRO LOGO
-                Only this logo has been moved */}
             {settings.primeproLogoUrl ? (
-              <Image
-                src={settings.primeproLogoUrl}
-                style={styles.logoLeft}
-              />
+              <Image src={settings.primeproLogoUrl} style={styles.logoLeft} />
             ) : null}
-
-            {/* ONLY THIS HEADING IS BOLD */}
-            <Text style={styles.officeHeading}>
-              USA Headquarters
-            </Text>
-
-            {/* NORMAL TEXT */}
-            <Text style={styles.companyLine}>
-              {settings.primeproName}
-            </Text>
-
-            <Text style={styles.companyLine}>
-              {settings.primeproAddress}
-            </Text>
-
-            <Text style={styles.companyLine}>
-              {settings.primeproRegistration}
-            </Text>
-
-            <Text style={styles.companyLine}>
-              EIN: {settings.primeproEIN}
-            </Text>
-
-            <Text style={styles.companyLine}>
-              Phone: {settings.primeproPhone}
-            </Text>
-
-            <Text style={styles.companyLine}>
-              Email: {settings.primeproEmail}
-            </Text>
-
+            <Text style={styles.officeHeading}>USA Headquarters</Text>
+            <Text style={styles.companyLine}>{settings.primeproName}</Text>
+            <Text style={styles.companyLine}>{settings.primeproAddress}</Text>
+            <Text style={styles.companyLine}>{settings.primeproRegistration}</Text>
+            <Text style={styles.companyLine}>EIN: {settings.primeproEIN}</Text>
+            <Text style={styles.companyLine}>Phone: {settings.primeproPhone}</Text>
+            <Text style={styles.companyLine}>Email: {settings.primeproEmail}</Text>
           </View>
 
-
-          {/* ===============================================
-              FUELO - RIGHT
-              POSITION UNCHANGED
-          =============================================== */}
+          {/* FUELO - RIGHT */}
           <View style={styles.companyColRight}>
-
             {settings.fueloLogoUrl ? (
-              <Image
-                src={settings.fueloLogoUrl}
-                style={styles.logoRight}
-              />
+              <Image src={settings.fueloLogoUrl} style={styles.logoRight} />
             ) : null}
-
-            {/* ONLY THIS HEADING IS BOLD */}
-            <Text style={styles.officeHeading}>
-              India Office
-            </Text>
-
-            {/* NORMAL TEXT */}
-            <Text style={styles.companyLineRight}>
-              {settings.fueloName}
-            </Text>
-
-            <Text style={styles.companyLineRight}>
-              CIN: {settings.fueloCIN}
-            </Text>
-
-            <Text style={styles.companyLineRight}>
-              GSTIN: {settings.fueloGSTIN}
-            </Text>
-
-            <Text style={styles.companyLineRight}>
-              {settings.fueloAddress}
-            </Text>
-
-            <Text style={styles.companyLineRight}>
-              Phone: {settings.fueloPhone}
-            </Text>
-
-            <Text style={styles.companyLineRight}>
-              Email: {settings.fueloEmail}
-            </Text>
-
+            <Text style={styles.officeHeading}>India Office</Text>
+            <Text style={styles.companyLineRight}>{settings.fueloName}</Text>
+            <Text style={styles.companyLineRight}>CIN: {settings.fueloCIN}</Text>
+            <Text style={styles.companyLineRight}>GSTIN: {settings.fueloGSTIN}</Text>
+            <Text style={styles.companyLineRight}>{settings.fueloAddress}</Text>
+            <Text style={styles.companyLineRight}>Phone: {settings.fueloPhone}</Text>
+            <Text style={styles.companyLineRight}>Email: {settings.fueloEmail}</Text>
           </View>
-
         </View>
 
-
-        {/* =================================================
-            TAX INVOICE TITLE
-        ================================================= */}
+        {/* TITLE BAR */}
         <View style={styles.titleBar}>
-
-          <Text style={styles.titleText}>
-            TAX INVOICE
-          </Text>
-
+          <Text style={styles.titleText}>TAX INVOICE</Text>
           <View style={styles.metaGrid}>
-
             <View style={styles.metaItem}>
-              <Text style={styles.metaLabel}>
-                Invoice No.
-              </Text>
-
-              <Text style={styles.metaValue}>
-                {props.invoiceNumber}
-              </Text>
+              <Text style={styles.metaLabel}>Invoice No.</Text>
+              <Text style={styles.metaValue}>{props.invoiceNumber}</Text>
             </View>
-
             <View style={styles.metaItem}>
-              <Text style={styles.metaLabel}>
-                Invoice Date
-              </Text>
-
-              <Text style={styles.metaValue}>
-                {formatDate(props.invoiceDate)}
-              </Text>
+              <Text style={styles.metaLabel}>Invoice Date</Text>
+              <Text style={styles.metaValue}>{formatDate(props.invoiceDate)}</Text>
             </View>
-
             <View style={styles.metaItem}>
-              <Text style={styles.metaLabel}>
-                Due Date
-              </Text>
-
-              <Text style={styles.metaValue}>
-                {formatDate(props.dueDate)}
-              </Text>
+              <Text style={styles.metaLabel}>Due Date</Text>
+              <Text style={styles.metaValue}>{formatDate(props.dueDate)}</Text>
             </View>
-
             <View style={styles.metaItem}>
-              <Text style={styles.metaLabel}>
-                Status
-              </Text>
-
-              <Text style={styles.metaValue}>
-                {props.paymentStatus.replace("_", " ")}
-              </Text>
+              <Text style={styles.metaLabel}>Status</Text>
+              <Text style={styles.metaValue}>{props.paymentStatus.replace("_", " ")}</Text>
             </View>
-
           </View>
-
         </View>
 
+        {/* PACKAGE TITLE BANNER (If specified) */}
+        {props.packageTitle ? (
+          <View style={styles.packageBanner}>
+            <Text style={styles.packageBannerTitle}>{props.packageTitle}</Text>
+            {props.packageSubtitle ? (
+              <Text style={styles.packageBannerSubtitle}>{props.packageSubtitle}</Text>
+            ) : null}
+          </View>
+        ) : null}
 
-        {/* =================================================
-            BILL TO
-        ================================================= */}
+        {/* BILL TO */}
         <View style={styles.billToBox}>
-
-          <Text style={styles.sectionLabel}>
-            Bill To
-          </Text>
-
-          <Text style={styles.billToName}>
-            {props.customer.companyName}
-          </Text>
-
+          <Text style={styles.sectionLabel}>Bill To</Text>
+          <Text style={styles.billToName}>{props.customer.companyName}</Text>
           {props.customer.contactPerson ? (
-            <Text style={styles.billToLine}>
-              Attn: {props.customer.contactPerson}
-            </Text>
+            <Text style={styles.billToLine}>Attn: {props.customer.contactPerson}</Text>
           ) : null}
-
+          <Text style={styles.billToLine}>{props.customer.billingAddress}</Text>
           <Text style={styles.billToLine}>
-            {props.customer.billingAddress}
+            {props.customer.city}, {props.customer.state} — {props.customer.pincode}
           </Text>
-
-          <Text style={styles.billToLine}>
-            {props.customer.city}, {props.customer.state} —{" "}
-            {props.customer.pincode}
-          </Text>
-
-          <Text style={styles.billToLine}>
-            {props.customer.country}
-          </Text>
-
-          <Text style={styles.billToLine}>
-            Phone: {props.customer.phone}
-          </Text>
-
+          <Text style={styles.billToLine}>{props.customer.country}</Text>
+          <Text style={styles.billToLine}>Phone: {props.customer.phone}</Text>
           {props.customer.email ? (
-            <Text style={styles.billToLine}>
-              Email: {props.customer.email}
-            </Text>
+            <Text style={styles.billToLine}>Email: {props.customer.email}</Text>
           ) : null}
-
           {props.customer.gstin ? (
-            <Text style={styles.billToLine}>
-              GSTIN: {props.customer.gstin}
-            </Text>
+            <Text style={styles.billToLine}>GSTIN: {props.customer.gstin}</Text>
           ) : null}
-
-          <Text style={styles.billToLine}>
-            Place of Supply: {props.customer.placeOfSupply}
-          </Text>
-
+          <Text style={styles.billToLine}>Place of Supply: {props.customer.placeOfSupply}</Text>
         </View>
 
-
-        {/* =================================================
-            SERVICES TABLE
-        ================================================= */}
+        {/* SERVICES TABLE */}
         <View style={styles.table}>
-
           <View style={styles.tableHeader}>
-
-            <Text style={[styles.tableHeaderCell, styles.colSno]}>
-              #
-            </Text>
-
-            <Text style={[styles.tableHeaderCell, styles.colService]}>
-              Service
-            </Text>
-
-            <Text style={[styles.tableHeaderCell, styles.colPackage]}>
-              Package
-            </Text>
-
-            <Text style={[styles.tableHeaderCell, styles.colQty]}>
-              Qty
-            </Text>
-
-            <Text style={[styles.tableHeaderCell, styles.colRate]}>
-              Rate
-            </Text>
-
-            <Text style={[styles.tableHeaderCell, styles.colGst]}>
-              GST
-            </Text>
-
-            <Text style={[styles.tableHeaderCell, styles.colAmount]}>
-              Amount
-            </Text>
-
+            <Text style={[styles.tableHeaderCell, styles.colSno]}>#</Text>
+            <Text style={[styles.tableHeaderCell, styles.colService]}>Service</Text>
+            <Text style={[styles.tableHeaderCell, styles.colPackage]}>Package</Text>
+            <Text style={[styles.tableHeaderCell, styles.colQty]}>Qty</Text>
+            <Text style={[styles.tableHeaderCell, styles.colRate]}>Standard Price</Text>
+            <Text style={[styles.tableHeaderCell, styles.colAmount]}>Amount</Text>
           </View>
-
 
           {props.lineItems.map((item, idx) => (
             <View
               key={idx}
-              style={[
-                styles.tableRow,
-                ...(idx % 2 === 1
-                  ? [styles.tableRowAlt]
-                  : []),
-              ]}
+              style={[styles.tableRow, ...(idx % 2 === 1 ? [styles.tableRowAlt] : [])]}
             >
-
-              <Text style={[styles.tableCell, styles.colSno]}>
-                {idx + 1}
-              </Text>
-
-              <Text style={[styles.tableCell, styles.colService]}>
-                {item.categoryName}
-              </Text>
-
-              <Text style={[styles.tableCell, styles.colPackage]}>
-                {item.packageName}
-              </Text>
-
-              <Text style={[styles.tableCell, styles.colQty]}>
-                {item.quantity}
-              </Text>
-
-              <Text style={[styles.tableCell, styles.colRate]}>
-                {money(item.rate)}
-              </Text>
-
-              <Text style={[styles.tableCell, styles.colGst]}>
-                {props.gstEnabled
-                  ? `${item.gstPercent}%`
-                  : "—"}
-              </Text>
-
-              <Text style={[styles.tableCell, styles.colAmount]}>
-                {money(item.total)}
-              </Text>
-
+              <Text style={[styles.tableCell, styles.colSno]}>{idx + 1}</Text>
+              <Text style={[styles.tableCell, styles.colService]}>{item.categoryName}</Text>
+              <Text style={[styles.tableCell, styles.colPackage]}>{item.packageName}</Text>
+              <Text style={[styles.tableCell, styles.colQty]}>{item.quantity}</Text>
+              <Text style={[styles.tableCell, styles.colRate]}>{money(item.rate)}</Text>
+              <Text style={[styles.tableCell, styles.colAmount]}>{money(item.total)}</Text>
             </View>
           ))}
-
         </View>
 
-
-        {/* =================================================
-            TOTALS
-        ================================================= */}
+        {/* TOTALS & SPECIAL PACKAGE BREAKDOWN */}
         <View style={styles.totalsWrap}>
-
           <View style={styles.totalsBox}>
-
             <View style={styles.totalsRow}>
-              <Text style={styles.totalsLabel}>
-                Subtotal
-              </Text>
-
-              <Text style={styles.totalsValue}>
-                {money(props.subtotal)}
-              </Text>
+              <Text style={styles.totalsLabel}>Total Value (Subtotal)</Text>
+              <Text style={styles.totalsValue}>{money(props.subtotal)}</Text>
             </View>
 
-            <View style={styles.totalsRow}>
-              <Text style={styles.totalsLabel}>
-                Discount
-              </Text>
-
-              <Text style={styles.totalsValue}>
-                - {money(props.discountAmount)}
-              </Text>
-            </View>
-
-            <View style={styles.totalsRow}>
-              <Text style={styles.totalsLabel}>
-                Taxable Amount
-              </Text>
-
-              <Text style={styles.totalsValue}>
-                {money(props.taxableAmount)}
-              </Text>
-            </View>
-
-            <View style={styles.totalsRow}>
-
-              <Text style={styles.totalsLabel}>
-                GST{" "}
-                {props.gstEnabled
-                  ? `@ ${props.gstPercent}%`
-                  : "(not applied)"}
-              </Text>
-
-              <Text style={styles.totalsValue}>
-                {money(props.gstAmount)}
-              </Text>
-
-            </View>
-
-            <View style={styles.grandTotalRow}>
-
-              <Text style={styles.grandTotalLabel}>
-                Grand Total
-              </Text>
-
-              <Text style={styles.grandTotalValue}>
-                {money(props.grandTotal)}
-              </Text>
-
-            </View>
-
-            <View style={styles.totalsRow}>
-
-              <Text style={styles.totalsLabel}>
-                Amount Paid
-              </Text>
-
-              <Text style={styles.totalsValue}>
-                {money(props.amountPaid)}
-              </Text>
-
-            </View>
-
-            <View style={styles.totalsRow}>
-
-              <Text style={styles.totalsLabel}>
-                Balance Due
-              </Text>
-
-              <Text style={styles.totalsValue}>
-                {money(props.balanceDue)}
-              </Text>
-
-            </View>
-
-          </View>
-
-        </View>
-
-
-        {/* =================================================
-            AMOUNT IN WORDS
-        ================================================= */}
-        <View style={styles.wordsBox}>
-
-          <Text style={styles.wordsLabel}>
-            Amount in Words
-          </Text>
-
-          <Text style={styles.wordsValue}>
-            {props.amountInWords}
-          </Text>
-
-        </View>
-
-
-        {/* =================================================
-            PAYMENT / QR / SIGNATURE
-        ================================================= */}
-        <View style={styles.bottomRow}>
-
-          {/* PAYMENT DETAILS */}
-          <View style={styles.paymentCol}>
-
-            <Text style={styles.sectionLabel}>
-              Payment Details
-            </Text>
-
-            <Text style={styles.billToLine}>
-              Method: {props.paymentMethod}
-            </Text>
-
-            {props.upiId ? (
-              <Text style={styles.billToLine}>
-                UPI ID: {props.upiId}
-              </Text>
-            ) : null}
-
-            {props.transactionRef ? (
-              <Text style={styles.billToLine}>
-                Reference No.: {props.transactionRef}
-              </Text>
-            ) : null}
-
-          </View>
-
-
-          {/* QR CODE */}
-          <View style={styles.qrCol}>
-
-            {settings.qrCodeUrl ? (
+            {props.discountAmount > 0 ? (
               <>
-                <Image
-                  src={settings.qrCodeUrl}
-                  style={styles.qrImage}
-                />
-
-                <Text style={styles.qrCaption}>
-                  Scan to Pay
-                </Text>
+                <View style={styles.discountRow}>
+                  <Text style={styles.discountLabel}>
+                    {props.discountReason || "Special Discount"}
+                  </Text>
+                  <Text style={styles.discountValue}>- {money(props.discountAmount)}</Text>
+                </View>
+                <View style={styles.totalsRow}>
+                  <Text style={styles.totalsLabel}>Final Package Price</Text>
+                  <Text style={styles.totalsValue}>{money(props.taxableAmount)}</Text>
+                </View>
               </>
             ) : null}
 
+            {props.gstEnabled ? (
+              <View style={styles.totalsRow}>
+                <Text style={styles.totalsLabel}>GST @ {props.gstPercent}%</Text>
+                <Text style={styles.totalsValue}>{money(props.gstAmount)}</Text>
+              </View>
+            ) : null}
+
+            <View style={styles.grandTotalRow}>
+              <Text style={styles.grandTotalLabel}>Grand Total</Text>
+              <Text style={styles.grandTotalValue}>{money(props.grandTotal)}</Text>
+            </View>
+
+            <View style={styles.totalsRow}>
+              <Text style={styles.totalsLabel}>Amount Paid</Text>
+              <Text style={styles.totalsValue}>{money(props.amountPaid)}</Text>
+            </View>
+
+            <View style={styles.totalsRow}>
+              <Text style={styles.totalsLabel}>Balance Due</Text>
+              <Text style={styles.totalsValue}>{money(props.balanceDue)}</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* AMOUNT IN WORDS */}
+        <View style={styles.wordsBox}>
+          <Text style={styles.wordsLabel}>Amount in Words</Text>
+          <Text style={styles.wordsValue}>{props.amountInWords}</Text>
+        </View>
+
+        {/* PAYMENT / QR / SIGNATURE */}
+        <View style={styles.bottomRow}>
+          {/* PAYMENT DETAILS */}
+          <View style={styles.paymentCol}>
+            <Text style={styles.sectionLabel}>Payment Details</Text>
+            <Text style={styles.billToLine}>Method: {props.paymentMethod}</Text>
+            {props.upiId ? <Text style={styles.billToLine}>UPI ID: {props.upiId}</Text> : null}
+            {props.transactionRef ? (
+              <Text style={styles.billToLine}>Ref No.: {props.transactionRef}</Text>
+            ) : null}
+            {props.paymentTermsText ? (
+              <Text style={[styles.billToLine, { marginTop: 2, fontWeight: 700, color: BRAND.greenDark }]}>
+                Terms: {props.paymentTermsText.split("\n")[0]}
+              </Text>
+            ) : null}
           </View>
 
+          {/* QR CODE */}
+          <View style={styles.qrCol}>
+            {settings.qrCodeUrl ? (
+              <>
+                <Image src={settings.qrCodeUrl} style={styles.qrImage} />
+                <Text style={styles.qrCaption}>Scan to Pay</Text>
+              </>
+            ) : null}
+          </View>
 
           {/* SIGNATURE */}
           <View style={styles.signCol}>
-
             {settings.signatureUrl ? (
-              <Image
-                src={settings.signatureUrl}
-                style={styles.signatureImg}
-              />
+              <Image src={settings.signatureUrl} style={styles.signatureImg} />
             ) : null}
-
-            <Text style={styles.signatureLine}>
-              {settings.signatoryLine1}
-            </Text>
-
-            <Text style={styles.signatureLine}>
-              {settings.signatoryLine2}
-            </Text>
-
+            <Text style={styles.signatureLine}>{settings.signatoryLine1}</Text>
+            <Text style={styles.signatureLine}>{settings.signatoryLine2}</Text>
           </View>
-
         </View>
 
-
         {/* FOOTER */}
-        <Text style={styles.footer}>
-          {settings.footerNote}
-        </Text>
-
-        <Text style={styles.pageNumber}>
-          Page 1 of 2
-        </Text>
-
+        <Text style={styles.footer}>{settings.footerNote}</Text>
+        <Text style={styles.pageNumber}>Page 1 of 2</Text>
       </Page>
 
-
       {/* =================================================
-          PAGE 2
+          PAGE 2: SCOPE, DELIVERABLES & TERMS
       ================================================= */}
       <Page size="A4" style={styles.page}>
+        <Text style={styles.termsTitle}>Package Scope, Deliverables & Terms</Text>
 
-        <Text style={styles.termsTitle}>
-          Terms & Conditions
-        </Text>
-
-
-        {props.termsSections.map((section) => (
-          <View
-            key={section.title}
-            style={styles.termsSection}
-          >
-
-            <Text style={styles.termsSectionTitle}>
-              {section.title}
+        {/* SPECIAL PACKAGE OFFER SUMMARY (If package or discount is present) */}
+        {props.packageTitle || props.discountAmount > 0 ? (
+          <View style={styles.highlightBox}>
+            <Text style={styles.highlightTitle}>
+              {props.packageTitle || "Special Package Offer"}
             </Text>
+            {props.packageSubtitle ? (
+              <Text style={[styles.highlightText, { marginBottom: 3, fontStyle: "italic" }]}>
+                {props.packageSubtitle}
+              </Text>
+            ) : null}
+            <Text style={styles.highlightText}>
+              Total Value: {money(props.subtotal)}
+              {props.discountAmount > 0
+                ? `  |  Special Discount: ${money(props.discountAmount)}  |  Final Package Price: ${money(props.taxableAmount)}`
+                : ""}
+            </Text>
+          </View>
+        ) : null}
 
-            {section.lines.map((line, i) => (
-              <Text
-                key={i}
-                style={styles.termsLine}
-              >
+        {/* PAYMENT TERMS */}
+        {props.paymentTermsText ? (
+          <View style={styles.termsSection}>
+            <Text style={styles.termsSectionTitle}>Payment Terms</Text>
+            {props.paymentTermsText.split("\n").map((line, i) => (
+              <Text key={i} style={styles.termsLine}>
                 {line}
               </Text>
             ))}
+          </View>
+        ) : null}
 
+        {/* SOCIAL MEDIA PLATFORMS INCLUDED */}
+        {platformBullets.length > 0 ? (
+          <View style={styles.termsSection}>
+            <Text style={styles.termsSectionTitle}>Social Media Platforms Included</Text>
+            {platformBullets.map((platform, i) => (
+              <View key={i} style={styles.bulletItem}>
+                <Text style={styles.bulletDot}>•</Text>
+                <Text style={styles.bulletText}>{platform}</Text>
+              </View>
+            ))}
+          </View>
+        ) : null}
+
+        {/* PACKAGE INCLUSIONS & DELIVERABLES */}
+        {inclusionBullets.length > 0 ? (
+          <View style={styles.termsSection}>
+            <Text style={styles.termsSectionTitle}>Package Includes & Deliverables</Text>
+            {inclusionBullets.map((item, i) => (
+              <View key={i} style={styles.bulletItem}>
+                <Text style={styles.bulletDot}>•</Text>
+                <Text style={styles.bulletText}>{item}</Text>
+              </View>
+            ))}
+          </View>
+        ) : null}
+
+        {/* SPECIAL OFFER NOTE */}
+        {props.specialOfferNote ? (
+          <View style={styles.highlightBox}>
+            <Text style={styles.highlightText}>{props.specialOfferNote}</Text>
+          </View>
+        ) : null}
+
+        {/* CATEGORY TERMS */}
+        {props.termsSections.map((section) => (
+          <View key={section.title} style={styles.termsSection}>
+            <Text style={styles.termsSectionTitle}>{section.title}</Text>
+            {section.lines.map((line, i) => (
+              <Text key={i} style={styles.termsLine}>
+                {line}
+              </Text>
+            ))}
           </View>
         ))}
 
-
         {/* GENERAL TERMS */}
         <View style={styles.termsSection}>
-
-          <Text style={styles.termsSectionTitle}>
-            General Terms
-          </Text>
-
+          <Text style={styles.termsSectionTitle}>General Terms</Text>
           {props.generalTerms.map((line, i) => (
-            <Text
-              key={i}
-              style={styles.termsLine}
-            >
+            <Text key={i} style={styles.termsLine}>
               {line}
             </Text>
           ))}
-
         </View>
-
 
         {/* PAGE 2 COMPANY FOOTER */}
         <View style={styles.termsFooterCols}>
-
           {/* PRIMEPRO */}
           <View style={styles.termsFooterCol}>
-
-            <Text style={styles.termsFooterName}>
-              {settings.primeproName}
-            </Text>
-
-            <Text style={styles.termsFooterLine}>
-              {settings.primeproAddress}
-            </Text>
-
-            <Text style={styles.termsFooterLine}>
-              {settings.primeproEmail}
-            </Text>
-
+            <Text style={styles.termsFooterName}>{settings.primeproName}</Text>
+            <Text style={styles.termsFooterLine}>{settings.primeproAddress}</Text>
+            <Text style={styles.termsFooterLine}>{settings.primeproEmail}</Text>
           </View>
-
 
           {/* FUELO */}
-          <View
-            style={[
-              styles.termsFooterCol,
-              {
-                alignItems: "flex-end",
-              },
-            ]}
-          >
-
-            <Text style={styles.termsFooterName}>
-              {settings.fueloName}
-            </Text>
-
-            <Text
-              style={[
-                styles.termsFooterLine,
-                {
-                  textAlign: "right",
-                },
-              ]}
-            >
+          <View style={[styles.termsFooterCol, { alignItems: "flex-end" }]}>
+            <Text style={styles.termsFooterName}>{settings.fueloName}</Text>
+            <Text style={[styles.termsFooterLine, { textAlign: "right" }]}>
               {settings.fueloAddress}
             </Text>
-
-            <Text
-              style={[
-                styles.termsFooterLine,
-                {
-                  textAlign: "right",
-                },
-              ]}
-            >
+            <Text style={[styles.termsFooterLine, { textAlign: "right" }]}>
               GSTIN: {settings.fueloGSTIN}
             </Text>
-
           </View>
-
         </View>
 
-
         {/* FOOTER */}
-        <Text style={styles.footer}>
-          {settings.footerNote}
-        </Text>
-
-        <Text style={styles.pageNumber}>
-          Page 2 of 2
-        </Text>
-
+        <Text style={styles.footer}>{settings.footerNote}</Text>
+        <Text style={styles.pageNumber}>Page 2 of 2</Text>
       </Page>
-
     </Document>
   );
 }

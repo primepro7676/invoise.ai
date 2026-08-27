@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/api-auth";
-import { invoiceSchema } from "@/lib/validation";
-import { computeInvoiceTotals, numberToWordsINR } from "@/lib/calculations";
+import { invoiceSchema, formatInvoiceNotes } from "@/lib/validation";
+import { computeInvoiceTotals, lineItemTotal, numberToWordsINR } from "@/lib/calculations";
 import { z } from "zod";
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -41,15 +41,33 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     });
     if (duplicate) return NextResponse.json({ error: "Invoice number already exists" }, { status: 409 });
 
+    const itemsForCalc = data.lineItems.map((li) => ({
+      quantity: li.quantity,
+      rate: li.rate,
+      discount: li.discount,
+      discountType: li.discountType,
+      gstPercent: data.gstEnabled ? li.gstPercent : 0,
+    }));
+
     const totals = computeInvoiceTotals({
-      lineItems: data.lineItems.map((li) => ({
-        quantity: li.quantity,
-        rate: li.rate,
-        discount: li.discount,
-        gstPercent: data.gstEnabled ? li.gstPercent : 0,
-      })),
+      lineItems: itemsForCalc,
       gstEnabled: data.gstEnabled,
       amountPaid: data.amountPaid,
+      overallDiscount: data.overallDiscount,
+      discountType: data.discountType,
+    });
+
+    const formattedNotes = formatInvoiceNotes({
+      notes: data.notes,
+      packageTitle: data.packageTitle,
+      packageSubtitle: data.packageSubtitle,
+      platformsIncluded: data.platformsIncluded,
+      packageInclusions: data.packageInclusions,
+      paymentTermsText: data.paymentTermsText,
+      specialOfferNote: data.specialOfferNote,
+      overallDiscount: data.overallDiscount,
+      discountType: data.discountType,
+      discountReason: data.discountReason,
     });
 
     const updated = await prisma.$transaction(async (tx) => {
@@ -75,12 +93,20 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
           paymentMethod: data.paymentMethod,
           upiId: data.upiId,
           transactionRef: data.transactionRef,
-          notes: data.notes,
+          notes: formattedNotes,
           selectedCategoryIds: Array.from(new Set(data.lineItems.map((li) => li.categoryName))).join(","),
           lineItems: {
             create: data.lineItems.map((li, idx) => {
-              const base = li.quantity * li.rate - li.discount;
-              const gst = data.gstEnabled ? (base * li.gstPercent) / 100 : 0;
+              const { discountAmt, base, gst } = lineItemTotal(
+                {
+                  quantity: li.quantity,
+                  rate: li.rate,
+                  discount: li.discount,
+                  discountType: li.discountType,
+                  gstPercent: data.gstEnabled ? li.gstPercent : 0,
+                },
+                data.gstEnabled
+              );
               return {
                 categoryName: li.categoryName,
                 packageName: li.packageName,
@@ -88,7 +114,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
                 quantity: li.quantity,
                 rate: li.rate,
                 isCustomPrice: li.isCustomPrice,
-                discount: li.discount,
+                discount: discountAmt,
                 gstPercent: data.gstEnabled ? li.gstPercent : 0,
                 total: Math.round((base + gst + Number.EPSILON) * 100) / 100,
                 sortOrder: idx,

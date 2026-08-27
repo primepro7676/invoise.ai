@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { prisma } from "@/lib/prisma";
 import { InvoiceDocument } from "@/lib/pdf/InvoiceDocument";
+import { parseInvoiceNotes } from "@/lib/validation";
 import React from "react";
 
 export const runtime = "nodejs";
@@ -51,11 +52,20 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       lines: (c.terms?.content || "").split("\n").filter(Boolean),
     }));
 
+  const packageMeta = parseInvoiceNotes(invoice.notes);
+
   const doc = React.createElement(InvoiceDocument, {
     invoiceNumber: invoice.invoiceNumber,
     invoiceDate: invoice.invoiceDate.toISOString(),
     dueDate: invoice.dueDate.toISOString(),
     paymentStatus: invoice.paymentStatus,
+    packageTitle: packageMeta.packageTitle,
+    packageSubtitle: packageMeta.packageSubtitle,
+    platformsIncluded: packageMeta.platformsIncluded,
+    packageInclusions: packageMeta.packageInclusions,
+    paymentTermsText: packageMeta.paymentTermsText,
+    specialOfferNote: packageMeta.specialOfferNote,
+    discountReason: packageMeta.discountReason,
     settings: {
       primeproName: settings.primeproName,
       primeproTagline: settings.primeproTagline,
@@ -95,16 +105,14 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       gstin: invoice.customer.gstin,
       placeOfSupply: invoice.customer.placeOfSupply,
     },
-    lineItems: invoice.lineItems.map(
-      (li) => ({
-        categoryName: li.categoryName,
-        packageName: li.packageName,
-        quantity: li.quantity,
-        rate: li.rate,
-        gstPercent: li.gstPercent,
-        total: li.total,
-      })
-    ),
+    lineItems: invoice.lineItems.map((li) => ({
+      categoryName: li.categoryName,
+      packageName: li.packageName,
+      quantity: li.quantity,
+      rate: li.rate,
+      gstPercent: li.gstPercent,
+      total: li.total,
+    })),
     gstEnabled: invoice.gstEnabled,
     gstPercent: invoice.gstPercent,
     subtotal: invoice.subtotal,

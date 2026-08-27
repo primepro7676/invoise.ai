@@ -145,6 +145,27 @@ model Package {
   @@map("package")
 }
 
+model PackageBundle {
+  id                String   @id @default(cuid())
+  name              String
+  subtitle          String   @default("")
+  tier              String   @default("Premium") // "Standard" | "Professional" | "Premium" | "Custom"
+  items             String   @db.Text
+  totalPrice        Float    @default(0)
+  discountPrice     Float    @default(0)
+  finalPrice        Float    @default(0)
+  platformsIncluded String   @default("") @db.Text
+  deliverables      String   @default("") @db.Text
+  paymentTerms      String   @default("") @db.Text
+  specialNote       String   @default("")
+  sortOrder         Int      @default(0)
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("packagebundle")
+}
+
 model ServiceCategory {
   id                 String              @id @default(cuid())
   name               String              @unique(map: "ServiceCategory_name_key")

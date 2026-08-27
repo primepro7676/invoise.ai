@@ -33,6 +33,31 @@ export const categorySchema = z.object({
 });
 export type CategoryFormValues = z.infer<typeof categorySchema>;
 
+export const bundleItemSchema = z.object({
+  categoryName: z.string().min(1, "Service category is required"),
+  packageName: z.string().min(1, "Package item name is required"),
+  quantity: z.coerce.number().min(0.01).default(1),
+  rate: z.coerce.number().min(0).default(0),
+  description: z.string().optional().default(""),
+  isCustomPrice: z.boolean().optional().default(false),
+});
+export type BundleItemFormValues = z.infer<typeof bundleItemSchema>;
+
+export const packageBundleSchema = z.object({
+  name: z.string().min(1, "Main package name is required"),
+  subtitle: z.string().optional().default(""),
+  tier: z.enum(["Standard", "Professional", "Premium", "Custom"]).default("Premium"),
+  items: z.array(bundleItemSchema).min(1, "Add at least one service to the bundle"),
+  totalPrice: z.coerce.number().min(0).default(0),
+  discountPrice: z.coerce.number().min(0).default(0),
+  finalPrice: z.coerce.number().min(0).default(0),
+  platformsIncluded: z.string().optional().default(""),
+  deliverables: z.string().optional().default(""),
+  paymentTerms: z.string().optional().default(""),
+  specialNote: z.string().optional().default(""),
+});
+export type PackageBundleFormValues = z.infer<typeof packageBundleSchema>;
+
 export const lineItemSchema = z.object({
   categoryName: z.string().min(1, "Select a service"),
   packageName: z.string().min(1, "Select a package"),
@@ -41,6 +66,7 @@ export const lineItemSchema = z.object({
   rate: z.coerce.number().min(0, "Price must be 0 or more"),
   isCustomPrice: z.boolean().optional().default(false),
   discount: z.coerce.number().min(0).optional().default(0),
+  discountType: z.enum(["FLAT", "PERCENT"]).optional().default("FLAT"),
   gstPercent: z.coerce.number().min(0).max(100).optional().default(18),
 });
 export type LineItemFormValues = z.infer<typeof lineItemSchema>;
@@ -70,6 +96,19 @@ export const invoiceSchema = z
     newCustomer: newCustomerLenient.optional(),
 
     lineItems: z.array(lineItemSchema).min(1, "Add at least one service"),
+
+    // Overall Discount (both % and ₹ supported, optional)
+    overallDiscount: z.coerce.number().min(0).optional().default(0),
+    discountType: z.enum(["FLAT", "PERCENT"]).optional().default("FLAT"),
+    discountReason: z.string().optional().default(""),
+
+    // Special Package Offer Details & Scope (all optional)
+    packageTitle: z.string().optional().default(""),
+    packageSubtitle: z.string().optional().default(""),
+    platformsIncluded: z.string().optional().default(""),
+    packageInclusions: z.string().optional().default(""),
+    paymentTermsText: z.string().optional().default(""),
+    specialOfferNote: z.string().optional().default(""),
 
     gstEnabled: z.boolean().default(true),
     gstPercent: z.coerce.number().min(0).max(100).default(18),
@@ -117,6 +156,112 @@ export const invoiceSchema = z
     }
   });
 export type InvoiceFormValues = z.infer<typeof invoiceSchema>;
+
+export interface InvoicePackageMeta {
+  packageTitle?: string;
+  packageSubtitle?: string;
+  platformsIncluded?: string;
+  packageInclusions?: string;
+  paymentTermsText?: string;
+  specialOfferNote?: string;
+  overallDiscount?: number;
+  discountType?: "FLAT" | "PERCENT";
+  discountReason?: string;
+  internalNotes?: string;
+}
+
+export function formatInvoiceNotes(data: {
+  notes?: string;
+  packageTitle?: string;
+  packageSubtitle?: string;
+  platformsIncluded?: string;
+  packageInclusions?: string;
+  paymentTermsText?: string;
+  specialOfferNote?: string;
+  overallDiscount?: number;
+  discountType?: "FLAT" | "PERCENT";
+  discountReason?: string;
+}): string {
+  const meta: InvoicePackageMeta = {
+    internalNotes: data.notes || "",
+    packageTitle: data.packageTitle || "",
+    packageSubtitle: data.packageSubtitle || "",
+    platformsIncluded: data.platformsIncluded || "",
+    packageInclusions: data.packageInclusions || "",
+    paymentTermsText: data.paymentTermsText || "",
+    specialOfferNote: data.specialOfferNote || "",
+    overallDiscount: data.overallDiscount || 0,
+    discountType: data.discountType || "FLAT",
+    discountReason: data.discountReason || "",
+  };
+
+  const hasExtra =
+    Boolean(meta.packageTitle) ||
+    Boolean(meta.packageSubtitle) ||
+    Boolean(meta.platformsIncluded) ||
+    Boolean(meta.packageInclusions) ||
+    Boolean(meta.paymentTermsText) ||
+    Boolean(meta.specialOfferNote) ||
+    (meta.overallDiscount ?? 0) > 0 ||
+    Boolean(meta.discountReason);
+
+  if (!hasExtra) {
+    return data.notes || "";
+  }
+
+  return JSON.stringify(meta);
+}
+
+export function parseInvoiceNotes(rawNotes: string | null | undefined): InvoicePackageMeta {
+  if (!rawNotes || !rawNotes.trim()) {
+    return {
+      internalNotes: "",
+      packageTitle: "",
+      packageSubtitle: "",
+      platformsIncluded: "",
+      packageInclusions: "",
+      paymentTermsText: "",
+      specialOfferNote: "",
+      overallDiscount: 0,
+      discountType: "FLAT",
+      discountReason: "",
+    };
+  }
+
+  const trimmed = rawNotes.trim();
+  if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
+    try {
+      const parsed = JSON.parse(trimmed);
+      return {
+        internalNotes: parsed.internalNotes || parsed.notes || "",
+        packageTitle: parsed.packageTitle || "",
+        packageSubtitle: parsed.packageSubtitle || "",
+        platformsIncluded: parsed.platformsIncluded || "",
+        packageInclusions: parsed.packageInclusions || "",
+        paymentTermsText: parsed.paymentTermsText || "",
+        specialOfferNote: parsed.specialOfferNote || "",
+        overallDiscount: Number(parsed.overallDiscount) || 0,
+        discountType: parsed.discountType === "PERCENT" ? "PERCENT" : "FLAT",
+        discountReason: parsed.discountReason || "",
+      };
+    } catch {
+      // fallback to plain string
+    }
+  }
+
+  return {
+    internalNotes: rawNotes,
+    packageTitle: "",
+    packageSubtitle: "",
+    platformsIncluded: "",
+    packageInclusions: "",
+    paymentTermsText: "",
+    specialOfferNote: "",
+    overallDiscount: 0,
+    discountType: "FLAT",
+    discountReason: "",
+  };
+}
 
 export const companySettingsSchema = z.object({
   primeproName: z.string().min(1),

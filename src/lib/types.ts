@@ -28,3 +28,31 @@ export interface CustomerDTO {
   gstin: string;
   placeOfSupply: string;
 }
+
+export interface BundleItemDTO {
+  categoryName: string;
+  packageName: string;
+  quantity: number;
+  rate: number;
+  description?: string;
+  isCustomPrice?: boolean;
+}
+
+export interface PackageBundleDTO {
+  id: string;
+  name: string;
+  subtitle: string;
+  tier: string;
+  items: BundleItemDTO[];
+  totalPrice: number;
+  discountPrice: number;
+  finalPrice: number;
+  platformsIncluded: string;
+  deliverables: string;
+  paymentTerms: string;
+  specialNote: string;
+  sortOrder: number;
+  isActive: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}

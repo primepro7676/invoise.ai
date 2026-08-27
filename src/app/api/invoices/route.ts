@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/api-auth";
-import { invoiceSchema } from "@/lib/validation";
-import { computeInvoiceTotals, numberToWordsINR } from "@/lib/calculations";
+import { invoiceSchema, formatInvoiceNotes } from "@/lib/validation";
+import { computeInvoiceTotals, lineItemTotal, numberToWordsINR } from "@/lib/calculations";
 
 export async function GET(req: NextRequest) {
   const q = req.nextUrl.searchParams.get("q")?.trim();
@@ -58,6 +58,7 @@ export async function POST(req: NextRequest) {
     quantity: li.quantity,
     rate: li.rate,
     discount: li.discount,
+    discountType: li.discountType,
     gstPercent: data.gstEnabled ? li.gstPercent : 0,
   }));
 
@@ -65,6 +66,21 @@ export async function POST(req: NextRequest) {
     lineItems: itemsForCalc,
     gstEnabled: data.gstEnabled,
     amountPaid: data.amountPaid,
+    overallDiscount: data.overallDiscount,
+    discountType: data.discountType,
+  });
+
+  const formattedNotes = formatInvoiceNotes({
+    notes: data.notes,
+    packageTitle: data.packageTitle,
+    packageSubtitle: data.packageSubtitle,
+    platformsIncluded: data.platformsIncluded,
+    packageInclusions: data.packageInclusions,
+    paymentTermsText: data.paymentTermsText,
+    specialOfferNote: data.specialOfferNote,
+    overallDiscount: data.overallDiscount,
+    discountType: data.discountType,
+    discountReason: data.discountReason,
   });
 
   const selectedCategoryIds = Array.from(new Set(data.lineItems.map((li) => li.categoryName))).join(",");
@@ -89,12 +105,20 @@ export async function POST(req: NextRequest) {
       paymentMethod: data.paymentMethod,
       upiId: data.upiId,
       transactionRef: data.transactionRef,
-      notes: data.notes,
+      notes: formattedNotes,
       selectedCategoryIds,
       lineItems: {
         create: data.lineItems.map((li, idx) => {
-          const base = li.quantity * li.rate - li.discount;
-          const gst = data.gstEnabled ? (base * li.gstPercent) / 100 : 0;
+          const { discountAmt, base, gst } = lineItemTotal(
+            {
+              quantity: li.quantity,
+              rate: li.rate,
+              discount: li.discount,
+              discountType: li.discountType,
+              gstPercent: data.gstEnabled ? li.gstPercent : 0,
+            },
+            data.gstEnabled
+          );
           return {
             categoryName: li.categoryName,
             packageName: li.packageName,
@@ -102,7 +126,7 @@ export async function POST(req: NextRequest) {
             quantity: li.quantity,
             rate: li.rate,
             isCustomPrice: li.isCustomPrice,
-            discount: li.discount,
+            discount: discountAmt,
             gstPercent: data.gstEnabled ? li.gstPercent : 0,
             total: Math.round((base + gst + Number.EPSILON) * 100) / 100,
             sortOrder: idx,
