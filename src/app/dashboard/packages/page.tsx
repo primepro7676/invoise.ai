@@ -1,21 +1,36 @@
 import { prisma } from "@/lib/prisma";
 import { PackagesClient } from "@/components/services/packages-client";
 import type { PackageBundleDTO } from "@/lib/types";
+import { ensurePackageBundleTable } from "@/lib/ensure-db";
 
 export const dynamic = "force-dynamic";
 
 export default async function PackagesPage() {
-  const [categories, bundles] = await Promise.all([
-    prisma.serviceCategory.findMany({
+  await ensurePackageBundleTable();
+
+  let categories: any[] = [];
+  let bundles: any[] = [];
+
+  try {
+    categories = await prisma.serviceCategory.findMany({
       where: { isActive: true },
       include: { packages: { where: { isActive: true }, orderBy: { sortOrder: "asc" } } },
       orderBy: { sortOrder: "asc" },
-    }),
-    prisma.packageBundle.findMany({
+    });
+  } catch (err) {
+    console.error("Failed to fetch service categories:", err);
+    categories = [];
+  }
+
+  try {
+    bundles = await prisma.packageBundle.findMany({
       where: { isActive: true },
       orderBy: { sortOrder: "asc" },
-    }),
-  ]);
+    });
+  } catch (err) {
+    console.error("Failed to fetch package bundles:", err);
+    bundles = [];
+  }
 
   const initialBundles: PackageBundleDTO[] = bundles.map((b) => {
     let items = [];
@@ -55,7 +70,7 @@ export default async function PackagesPage() {
           id: c.id,
           name: c.name,
           description: c.description,
-          packages: c.packages.map((p) => ({
+          packages: (c.packages || []).map((p: any) => ({
             id: p.id,
             name: p.name,
             price: p.price,
