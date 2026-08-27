@@ -6,16 +6,18 @@ datasource db {
   provider = "mysql"
 }
 
-model admin {
-  id        String   @id
+model Admin {
+  id        String   @id @default(cuid())
   name      String
   email     String   @unique(map: "Admin_email_key")
   password  String
   role      String   @default("ADMIN")
   createdAt DateTime @default(now())
+
+  @@map("admin")
 }
 
-model companysettings {
+model CompanySettings {
   id                   String   @id @default("singleton")
   primeproName         String   @default("PrimePro Technologies AI LLC")
   primeproTagline      String   @default("USA Headquarters")
@@ -44,11 +46,13 @@ model companysettings {
   signatoryLine2       String   @default("Fuelo Technologies OPC Pvt Ltd")
   defaultGstPercent    Float    @default(18)
   footerNote           String   @default("Thank you for choosing us. This is a computer generated invoice.")
-  updatedAt            DateTime
+  updatedAt            DateTime @updatedAt
+
+  @@map("companysettings")
 }
 
-model customer {
-  id             String    @id
+model Customer {
+  id             String    @id @default(cuid())
   companyName    String
   contactPerson  String    @default("")
   billingAddress String
@@ -61,21 +65,25 @@ model customer {
   gstin          String    @default("")
   placeOfSupply  String
   createdAt      DateTime  @default(now())
-  updatedAt      DateTime
-  invoice        invoice[]
+  updatedAt      DateTime  @updatedAt
+  invoices       Invoice[]
+
+  @@map("customer")
 }
 
-model generalterms {
+model GeneralTerms {
   id      String @id @default("singleton")
   content String @default("1. GST is calculated at 18% unless otherwise specified on the invoice.\n2. Payments are due according to the invoice due date.\n3. Additional services requested after confirmation may incur additional charges.\n4. Customer is responsible for providing accurate information and required access.") @db.Text
+
+  @@map("generalterms")
 }
 
-model invoice {
-  id                  String                @id
+model Invoice {
+  id                  String                @id @default(cuid())
   invoiceNumber       String                @unique(map: "Invoice_invoiceNumber_key")
   invoiceDate         DateTime
   dueDate             DateTime
-  paymentStatus       invoice_paymentStatus @default(UNPAID)
+  paymentStatus       PaymentStatus         @default(UNPAID)
   customerId          String
   gstEnabled          Boolean               @default(true)
   gstPercent          Float                 @default(18)
@@ -93,15 +101,16 @@ model invoice {
   selectedCategoryIds String                @default("")
   notes               String                @default("") @db.Text
   createdAt           DateTime              @default(now())
-  updatedAt           DateTime
-  customer            customer              @relation(fields: [customerId], references: [id], map: "Invoice_customerId_fkey")
-  invoicelineitem     invoicelineitem[]
+  updatedAt           DateTime              @updatedAt
+  customer            Customer              @relation(fields: [customerId], references: [id], map: "Invoice_customerId_fkey")
+  lineItems           InvoiceLineItem[]
 
   @@index([customerId], map: "Invoice_customerId_fkey")
+  @@map("invoice")
 }
 
-model invoicelineitem {
-  id            String  @id
+model InvoiceLineItem {
+  id            String  @id @default(cuid())
   invoiceId     String
   categoryName  String
   packageName   String
@@ -113,14 +122,14 @@ model invoicelineitem {
   gstPercent    Float   @default(18)
   total         Float
   sortOrder     Int     @default(0)
-  invoice       invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade, map: "InvoiceLineItem_invoiceId_fkey")
+  invoice       Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade, map: "InvoiceLineItem_invoiceId_fkey")
 
   @@index([invoiceId], map: "InvoiceLineItem_invoiceId_fkey")
+  @@map("invoicelineitem")
 }
 
-/// This model has been renamed to 'Renamedpackage' during introspection, because the original name 'package' is reserved.
-model Renamedpackage {
-  id              String          @id
+model Package {
+  id              String          @id @default(cuid())
   name            String
   price           Float
   description     String          @default("")
@@ -129,34 +138,38 @@ model Renamedpackage {
   isActive        Boolean         @default(true)
   categoryId      String
   createdAt       DateTime        @default(now())
-  updatedAt       DateTime
-  servicecategory servicecategory @relation(fields: [categoryId], references: [id], onDelete: Cascade, map: "Package_categoryId_fkey")
+  updatedAt       DateTime        @updatedAt
+  category        ServiceCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade, map: "Package_categoryId_fkey")
 
   @@index([categoryId], map: "Package_categoryId_fkey")
   @@map("package")
 }
 
-model servicecategory {
-  id                 String              @id
+model ServiceCategory {
+  id                 String              @id @default(cuid())
   name               String              @unique(map: "ServiceCategory_name_key")
   description        String              @default("")
   sortOrder          Int                 @default(0)
   isActive           Boolean             @default(true)
   createdAt          DateTime            @default(now())
-  updatedAt          DateTime
-  Renamedpackage     Renamedpackage[]
-  termsandconditions termsandconditions?
+  updatedAt          DateTime            @updatedAt
+  packages           Package[]
+  terms              TermsAndConditions?
+
+  @@map("servicecategory")
 }
 
-model termsandconditions {
-  id              String          @id
+model TermsAndConditions {
+  id              String          @id @default(cuid())
   categoryId      String          @unique(map: "TermsAndConditions_categoryId_key")
   content         String          @db.Text
-  updatedAt       DateTime
-  servicecategory servicecategory @relation(fields: [categoryId], references: [id], onDelete: Cascade, map: "TermsAndConditions_categoryId_fkey")
+  updatedAt       DateTime        @updatedAt
+  category        ServiceCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade, map: "TermsAndConditions_categoryId_fkey")
+
+  @@map("termsandconditions")
 }
 
-enum invoice_paymentStatus {
+enum PaymentStatus {
   UNPAID
   PARTIALLY_PAID
   PAID

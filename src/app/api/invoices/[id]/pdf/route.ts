@@ -6,10 +6,10 @@ import React from "react";
 
 export const runtime = "nodejs";
 
-function toAbsolute(url: string, origin: string) {
-  if (!url) return url;
-  if (url.startsWith("http")) return url;
-  return `${origin}${url}`;
+function toAbsolute(url: string | null | undefined, origin: string) {
+  if (!url) return url ?? "";
+  if (url.startsWith("http://") || url.startsWith("https://")) return url;
+  return `${origin}${url.startsWith("/") ? url : `/${url}`}`;
 }
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -37,7 +37,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   });
 
   const selectedCategoryNames = Array.from(
-    new Set(invoice.lineItems.map((li: { categoryName: string }) => li.categoryName))
+    new Set(invoice.lineItems.map((li) => li.categoryName))
   );
   const categories = await prisma.serviceCategory.findMany({
     where: { name: { in: selectedCategoryNames } },
@@ -45,8 +45,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   });
 
   const termsSections = categories
-    .sort((a: { sortOrder: number }, b: { sortOrder: number }) => a.sortOrder - b.sortOrder)
-    .map((c: { name: string; terms: { content: string } | null }) => ({
+    .sort((a, b) => a.sortOrder - b.sortOrder)
+    .map((c) => ({
       title: c.name,
       lines: (c.terms?.content || "").split("\n").filter(Boolean),
     }));
@@ -91,12 +91,12 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       pincode: invoice.customer.pincode,
       country: invoice.customer.country,
       phone: invoice.customer.phone,
-     email: invoice.customer.email ?? "",
+      email: invoice.customer.email ?? "",
       gstin: invoice.customer.gstin,
       placeOfSupply: invoice.customer.placeOfSupply,
     },
     lineItems: invoice.lineItems.map(
-      (li: { categoryName: string; packageName: string; quantity: number; rate: number; gstPercent: number; total: number }) => ({
+      (li) => ({
         categoryName: li.categoryName,
         packageName: li.packageName,
         quantity: li.quantity,

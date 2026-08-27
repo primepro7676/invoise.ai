@@ -2,7 +2,6 @@ import "dotenv/config";
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
-import crypto from "crypto";
 
 // =========================================================
 // DATABASE CONNECTION
@@ -79,7 +78,6 @@ async function main() {
   } else {
     admin = await prisma.admin.create({
       data: {
-        id: crypto.randomUUID(),
         name: "Admin",
         email,
         password: hashedPassword,

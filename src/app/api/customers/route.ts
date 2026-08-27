@@ -32,6 +32,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
   }
 
-  const customer = await prisma.customer.create({ data: parsed.data });
+  const customer = await prisma.customer.create({
+    data: parsed.data,
+  });
   return NextResponse.json(customer, { status: 201 });
 }

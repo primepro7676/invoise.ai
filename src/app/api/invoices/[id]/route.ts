@@ -82,10 +82,16 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
               const base = li.quantity * li.rate - li.discount;
               const gst = data.gstEnabled ? (base * li.gstPercent) / 100 : 0;
               return {
-                categoryName: li.categoryName, packageName: li.packageName, description: li.description,
-                quantity: li.quantity, rate: li.rate, isCustomPrice: li.isCustomPrice, discount: li.discount,
+                categoryName: li.categoryName,
+                packageName: li.packageName,
+                description: li.description,
+                quantity: li.quantity,
+                rate: li.rate,
+                isCustomPrice: li.isCustomPrice,
+                discount: li.discount,
                 gstPercent: data.gstEnabled ? li.gstPercent : 0,
-                total: Math.round((base + gst + Number.EPSILON) * 100) / 100, sortOrder: idx,
+                total: Math.round((base + gst + Number.EPSILON) * 100) / 100,
+                sortOrder: idx,
               };
             }),
           },
