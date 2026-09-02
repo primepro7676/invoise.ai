@@ -102,22 +102,22 @@ export function PackagesClient({ categories, initialBundles }: PackagesClientPro
     <div className="space-y-6 pb-8">
       {/* Tab Switcher & Action Buttons */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex w-full sm:w-auto rounded-xl bg-brand-50/70 p-1 border border-brand-100">
+        <div className="flex w-full sm:w-auto rounded-xl bg-white/[0.05] p-1 border border-white/10 backdrop-blur-md">
           <button
             type="button"
             onClick={() => setActiveTab("bundles")}
             className={`flex flex-1 sm:flex-initial items-center justify-center gap-1.5 sm:gap-2 rounded-lg px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold transition ${
               activeTab === "bundles"
-                ? "bg-brand-600 text-white shadow-sm"
-                : "text-navy-700 hover:text-navy-900"
+                ? "bg-amber-500 text-black shadow-md shadow-amber-500/20 font-bold"
+                : "text-slate-400 hover:text-white hover:bg-white/5"
             }`}
           >
             <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> Main Packages
             <span
               className={`ml-1 rounded-full px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-xs ${
                 activeTab === "bundles"
-                  ? "bg-brand-700 text-white"
-                  : "bg-brand-100 text-brand-800"
+                  ? "bg-black/20 text-black font-bold"
+                  : "bg-white/10 text-slate-300"
               }`}
             >
               {initialBundles.length}
@@ -129,16 +129,16 @@ export function PackagesClient({ categories, initialBundles }: PackagesClientPro
             onClick={() => setActiveTab("individual")}
             className={`flex flex-1 sm:flex-initial items-center justify-center gap-1.5 sm:gap-2 rounded-lg px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold transition ${
               activeTab === "individual"
-                ? "bg-brand-600 text-white shadow-sm"
-                : "text-navy-700 hover:text-navy-900"
+                ? "bg-amber-500 text-black shadow-md shadow-amber-500/20 font-bold"
+                : "text-slate-400 hover:text-white hover:bg-white/5"
             }`}
           >
             <Boxes className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> All Items & Rates
             <span
               className={`ml-1 rounded-full px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-xs ${
                 activeTab === "individual"
-                  ? "bg-brand-700 text-white"
-                  : "bg-brand-100 text-brand-800"
+                  ? "bg-black/20 text-black font-bold"
+                  : "bg-white/10 text-slate-300"
               }`}
             >
               {categories.reduce((acc, c) => acc + c.packages.length, 0)}
@@ -218,22 +218,22 @@ export function PackagesClient({ categories, initialBundles }: PackagesClientPro
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               {filteredBundles.map((bundle) => {
                 const tierStyles: Record<string, string> = {
-                  Standard: "bg-blue-100 text-blue-800 border-blue-200",
-                  Professional: "bg-purple-100 text-purple-800 border-purple-200",
-                  Premium: "bg-emerald-100 text-emerald-800 border-emerald-200",
-                  Custom: "bg-amber-100 text-amber-800 border-amber-200",
+                  Standard: "bg-blue-500/20 text-blue-300 border-blue-500/30",
+                  Professional: "bg-purple-500/20 text-purple-300 border-purple-500/30",
+                  Premium: "bg-amber-500/20 text-amber-300 border-amber-500/30",
+                  Custom: "bg-emerald-500/20 text-emerald-300 border-emerald-500/30",
                 };
                 const badgeClass =
-                  tierStyles[bundle.tier] || "bg-brand-100 text-brand-800 border-brand-200";
+                  tierStyles[bundle.tier] || "bg-amber-500/20 text-amber-300 border-amber-500/30";
 
                 return (
                   <Card
                     key={bundle.id}
-                    className="flex flex-col justify-between overflow-hidden border border-brand-200 bg-white shadow-sm transition hover:shadow-md"
+                    className="flex flex-col justify-between overflow-hidden border border-white/10 bg-[#0e1320]/90 backdrop-blur-xl shadow-xl transition hover:border-amber-500/40"
                   >
                     <div>
                       {/* Header */}
-                      <div className="flex items-start justify-between gap-3 border-b border-brand-100 pb-3.5">
+                      <div className="flex items-start justify-between gap-3 border-b border-white/10 pb-3.5">
                         <div>
                           <div className="flex items-center gap-2">
                             <span
@@ -242,11 +242,11 @@ export function PackagesClient({ categories, initialBundles }: PackagesClientPro
                               {bundle.tier} Tier
                             </span>
                           </div>
-                          <h3 className="mt-1.5 text-base sm:text-lg font-bold text-navy-900 leading-tight">
+                          <h3 className="mt-2 text-lg sm:text-xl font-extrabold text-white leading-tight">
                             {bundle.name}
                           </h3>
                           {bundle.subtitle && (
-                            <p className="mt-0.5 text-xs font-medium text-brand-700">
+                            <p className="mt-1 text-xs font-semibold text-amber-400">
                               {bundle.subtitle}
                             </p>
                           )}
@@ -255,14 +255,14 @@ export function PackagesClient({ categories, initialBundles }: PackagesClientPro
                         <div className="flex items-center gap-1 shrink-0">
                           <button
                             onClick={() => setEditingBundle(bundle)}
-                            className="rounded-lg p-1.5 text-navy-600 hover:bg-brand-50 hover:text-navy-900 transition"
+                            className="rounded-lg p-1.5 text-slate-400 hover:bg-white/10 hover:text-white transition"
                             title="Edit package bundle"
                           >
                             <Pencil className="h-4 w-4" />
                           </button>
                           <button
                             onClick={() => handleDeleteBundle(bundle.id)}
-                            className="rounded-lg p-1.5 text-red-500 hover:bg-red-50 hover:text-red-600 transition"
+                            className="rounded-lg p-1.5 text-red-400 hover:bg-red-500/20 hover:text-red-300 transition"
                             title="Delete package bundle"
                           >
                             <Trash2 className="h-4 w-4" />
@@ -272,24 +272,24 @@ export function PackagesClient({ categories, initialBundles }: PackagesClientPro
 
                       {/* Included Services Table */}
                       <div className="mt-4">
-                        <p className="mb-2 text-xs font-bold uppercase tracking-wider text-navy-600/70">
+                        <p className="mb-2 text-xs font-bold uppercase tracking-wider text-amber-400">
                           Included Services & Standard Prices ({bundle.items.length})
                         </p>
-                        <div className="overflow-hidden rounded-lg border border-brand-100 bg-brand-50/20">
+                        <div className="overflow-hidden rounded-xl border border-white/10 bg-white/[0.02]">
                           <table className="w-full text-xs">
-                            <thead className="border-b border-brand-100 bg-brand-50/50 text-left font-semibold text-navy-700">
+                            <thead className="border-b border-white/10 bg-white/[0.04] text-left font-semibold text-slate-400">
                               <tr>
-                                <th className="px-3 py-2">Service Item</th>
-                                <th className="px-3 py-2 text-right">Rate</th>
+                                <th className="px-3 py-2.5 font-semibold">Service Item</th>
+                                <th className="px-3 py-2.5 text-right font-semibold">Rate</th>
                               </tr>
                             </thead>
-                            <tbody className="divide-y divide-brand-100/60">
+                            <tbody className="divide-y divide-white/5">
                               {bundle.items.map((item, idx) => (
-                                <tr key={idx} className="hover:bg-brand-50/30">
-                                  <td className="px-3 py-2 text-navy-900 font-medium">
+                                <tr key={idx} className="transition hover:bg-white/[0.03]">
+                                  <td className="px-3 py-2.5 text-white font-medium">
                                     {item.packageName || item.categoryName}
                                   </td>
-                                  <td className="px-3 py-2 text-right font-semibold text-navy-800">
+                                  <td className="px-3 py-2.5 text-right font-bold text-amber-400">
                                     {item.isCustomPrice ? "Custom" : formatINR(item.rate)}
                                   </td>
                                 </tr>
@@ -301,15 +301,15 @@ export function PackagesClient({ categories, initialBundles }: PackagesClientPro
 
                       {/* Deliverables / Platforms preview */}
                       {(bundle.platformsIncluded || bundle.deliverables) && (
-                        <div className="mt-3.5 space-y-1 text-xs text-navy-600/80">
+                        <div className="mt-3.5 space-y-1 text-xs text-slate-400">
                           {bundle.platformsIncluded && (
                             <p className="line-clamp-1">
-                              <strong>Platforms:</strong> {bundle.platformsIncluded.replace(/\n/g, ", ")}
+                              <strong className="text-slate-300">Platforms:</strong> {bundle.platformsIncluded.replace(/\n/g, ", ")}
                             </p>
                           )}
                           {bundle.paymentTerms && (
                             <p className="line-clamp-1">
-                              <strong>Terms:</strong> {bundle.paymentTerms.split("\n")[0]}
+                              <strong className="text-slate-300">Terms:</strong> {bundle.paymentTerms.split("\n")[0]}
                             </p>
                           )}
                         </div>
@@ -317,23 +317,23 @@ export function PackagesClient({ categories, initialBundles }: PackagesClientPro
                     </div>
 
                     {/* Pricing Summary Box */}
-                    <div className="mt-5 rounded-xl border border-brand-200/80 bg-brand-50/40 p-3.5">
+                    <div className="mt-5 rounded-xl border border-white/10 bg-white/[0.03] p-3.5">
                       <div className="grid grid-cols-3 gap-2 text-center text-xs">
                         <div>
-                          <span className="text-navy-600/70">Total Value:</span>
-                          <p className="font-semibold text-navy-900 mt-0.5 text-xs sm:text-sm">
+                          <span className="text-slate-400">Total Value:</span>
+                          <p className="font-bold text-white mt-0.5 text-xs sm:text-sm">
                             {formatINR(bundle.totalPrice)}
                           </p>
                         </div>
                         <div>
-                          <span className="text-emerald-700 font-medium">Special Discount:</span>
-                          <p className="font-semibold text-emerald-700 mt-0.5 text-xs sm:text-sm">
+                          <span className="text-emerald-400 font-medium">Special Discount:</span>
+                          <p className="font-bold text-emerald-300 mt-0.5 text-xs sm:text-sm">
                             - {formatINR(bundle.discountPrice)}
                           </p>
                         </div>
                         <div>
-                          <span className="text-brand-800 font-bold">Final Price:</span>
-                          <p className="text-xs sm:text-base font-extrabold text-brand-700 mt-0.5">
+                          <span className="text-amber-400 font-bold">Final Price:</span>
+                          <p className="text-xs sm:text-base font-black text-amber-400 mt-0.5">
                             {formatINR(bundle.finalPrice)}
                           </p>
                         </div>
@@ -353,15 +353,15 @@ export function PackagesClient({ categories, initialBundles }: PackagesClientPro
       {activeTab === "individual" && (
         <div className="space-y-6">
           {filteredCategories.map((cat) => (
-            <Card key={cat.id} className="overflow-hidden border border-brand-100 shadow-sm">
-              <div className="mb-4 flex flex-wrap items-center justify-between gap-2 border-b border-brand-50 pb-3">
+            <Card key={cat.id} className="overflow-hidden border border-white/10 bg-[#0e1320]/85 backdrop-blur-xl shadow-xl">
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3">
                 <div className="flex items-center gap-2.5">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-100 text-brand-700">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400">
                     <Layers className="h-4 w-4" />
                   </div>
                   <div>
-                    <h2 className="text-base font-semibold text-navy-900">{cat.name}</h2>
-                    <span className="text-xs text-navy-600/60">
+                    <h2 className="text-base font-bold text-white">{cat.name}</h2>
+                    <span className="text-xs text-slate-400">
                       {cat.packages.length} item{cat.packages.length === 1 ? "" : "s"}
                     </span>
                   </div>
@@ -383,22 +383,22 @@ export function PackagesClient({ categories, initialBundles }: PackagesClientPro
                 {cat.packages.map((pkg) => (
                   <div
                     key={pkg.id}
-                    className="group relative flex flex-col justify-between rounded-xl border border-brand-100/80 bg-brand-50/20 p-4 transition hover:border-brand-300 hover:bg-brand-50/50 hover:shadow-sm"
+                    className="group relative flex flex-col justify-between rounded-xl border border-white/10 bg-white/[0.03] p-4 transition hover:border-amber-500/30 hover:bg-white/[0.06]"
                   >
                     <div>
                       <div className="flex items-start justify-between gap-2">
-                        <h4 className="font-semibold text-navy-900 leading-snug">{pkg.name}</h4>
+                        <h4 className="font-bold text-white leading-snug">{pkg.name}</h4>
                         <div className="flex shrink-0 items-center gap-1 opacity-80 group-hover:opacity-100">
                           <button
                             onClick={() => setEditingPackage({ categoryId: cat.id, pkg })}
-                            className="rounded p-1 text-navy-600 hover:bg-white hover:text-navy-900 transition"
+                            className="rounded p-1 text-slate-400 hover:bg-white/10 hover:text-white transition"
                             title="Edit package"
                           >
                             <Pencil className="h-3.5 w-3.5" />
                           </button>
                           <button
                             onClick={() => handleDeletePackage(pkg.id)}
-                            className="rounded p-1 text-red-500 hover:bg-red-50 hover:text-red-600 transition"
+                            className="rounded p-1 text-red-400 hover:bg-red-500/20 hover:text-red-300 transition"
                             title="Delete package"
                           >
                             <Trash2 className="h-3.5 w-3.5" />
@@ -407,21 +407,17 @@ export function PackagesClient({ categories, initialBundles }: PackagesClientPro
                       </div>
 
                       {pkg.description ? (
-                        <p className="mt-1.5 text-xs text-navy-600/70 line-clamp-2">
+                        <p className="mt-1.5 text-xs text-slate-400 line-clamp-2">
                           {pkg.description}
                         </p>
                       ) : (
-                        <p className="mt-1.5 text-xs italic text-navy-600/40">No description</p>
+                        <p className="mt-1.5 text-xs italic text-slate-600">No description</p>
                       )}
                     </div>
 
-                    <div className="mt-4 flex items-center justify-between border-t border-brand-100/60 pt-2.5">
-                      <span className="text-xs font-medium text-navy-600/60">Standard Rate</span>
-                      <span
-                        className={`text-sm font-bold ${
-                          pkg.isCustom ? "text-amber-700" : "text-brand-700"
-                        }`}
-                      >
+                    <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-2.5">
+                      <span className="text-xs font-medium text-slate-400">Standard Rate</span>
+                      <span className="text-sm font-bold text-amber-400">
                         {pkg.isCustom ? "Custom Price" : formatINR(pkg.price)}
                       </span>
                     </div>
@@ -429,7 +425,7 @@ export function PackagesClient({ categories, initialBundles }: PackagesClientPro
                 ))}
 
                 {cat.packages.length === 0 && (
-                  <div className="col-span-full rounded-lg border border-dashed border-brand-200 p-6 text-center text-sm text-navy-600/60">
+                  <div className="col-span-full rounded-xl border border-dashed border-white/10 p-6 text-center text-xs text-slate-500">
                     No items in <strong>{cat.name}</strong> yet.
                   </div>
                 )}
@@ -649,19 +645,19 @@ function MainPackageBundleModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-2 sm:p-4 backdrop-blur-xs">
-      <div className="flex max-h-[92vh] w-full max-w-3xl flex-col rounded-2xl bg-white shadow-2xl overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-2 sm:p-4 backdrop-blur-md">
+      <div className="flex max-h-[92vh] w-full max-w-3xl flex-col rounded-2xl border border-white/10 bg-[#0d121e] text-white shadow-2xl overflow-hidden backdrop-blur-2xl">
         {/* Sticky Header */}
-        <div className="flex shrink-0 items-center justify-between border-b border-brand-100 px-4 py-3.5 sm:px-6">
-          <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-100 text-brand-700">
+        <div className="flex shrink-0 items-center justify-between border-b border-white/10 bg-[#090c14] px-4 py-3.5 sm:px-6">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400">
               <Sparkles className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-base sm:text-lg font-bold text-navy-900 leading-tight">
+              <h3 className="text-base sm:text-lg font-bold text-white leading-tight">
                 {bundle ? "Edit Main Package Bundle" : "Create Main Package Bundle"}
               </h3>
-              <p className="text-xs text-navy-600/70">
+              <p className="text-xs text-slate-400">
                 Configure included services, tier, and automated pricing.
               </p>
             </div>
@@ -669,16 +665,16 @@ function MainPackageBundleModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-1.5 text-navy-400 hover:bg-gray-100 hover:text-navy-700 transition"
+            className="rounded-lg p-1.5 text-slate-400 hover:bg-white/10 hover:text-white transition"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {/* Scrollable Form Body */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5 bg-[#0d121e]">
           {error && (
-            <div className="rounded-lg bg-red-50 p-3 text-xs font-medium text-red-600">
+            <div className="rounded-xl border border-red-500/30 bg-red-500/15 p-3 text-xs font-medium text-red-300">
               {error}
             </div>
           )}
@@ -716,8 +712,8 @@ function MainPackageBundleModal({
                     onClick={() => setTier(t)}
                     className={`flex items-center justify-center gap-1.5 rounded-lg border py-2 text-xs sm:text-sm font-semibold transition ${
                       tier === t
-                        ? "border-brand-600 bg-brand-600 text-white shadow-sm"
-                        : "border-gray-200 bg-white text-navy-700 hover:bg-brand-50"
+                        ? "border-amber-500 bg-amber-500 text-black font-bold shadow-md shadow-amber-500/20"
+                        : "border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white"
                     }`}
                   >
                     <Tag className="h-3.5 w-3.5" />
@@ -728,11 +724,11 @@ function MainPackageBundleModal({
             </div>
 
             {/* Included Services Builder */}
-            <div className="rounded-xl border border-brand-200 bg-brand-50/20 p-3 sm:p-4">
+            <div className="rounded-xl border border-white/10 bg-white/[0.02] p-3 sm:p-4">
               <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <h4 className="text-sm font-bold text-navy-900">Included Services & Rates</h4>
-                  <p className="text-xs text-navy-600/70">
+                  <h4 className="text-sm font-bold text-white">Included Services & Rates</h4>
+                  <p className="text-xs text-slate-400">
                     Add the individual services included in this package and set their standard price.
                   </p>
                 </div>
@@ -751,7 +747,7 @@ function MainPackageBundleModal({
                 {items.map((item, idx) => (
                   <div
                     key={idx}
-                    className="grid grid-cols-1 gap-2.5 rounded-xl border border-brand-100 bg-white p-3 shadow-xs sm:grid-cols-12 sm:items-center"
+                    className="grid grid-cols-1 gap-2.5 rounded-xl border border-white/10 bg-white/[0.03] p-3 sm:grid-cols-12 sm:items-center"
                   >
                     <div className="sm:col-span-4">
                       <Label className="text-xs">Category</Label>
@@ -798,7 +794,7 @@ function MainPackageBundleModal({
                         <button
                           type="button"
                           onClick={() => handleRemoveItem(idx)}
-                          className="rounded p-1.5 text-red-500 hover:bg-red-50 transition"
+                          className="rounded p-1.5 text-red-400 hover:bg-red-500/15 transition"
                           title="Remove item"
                         >
                           <Trash2 className="h-4 w-4" />
@@ -810,17 +806,17 @@ function MainPackageBundleModal({
               </div>
 
               {/* Pricing Breakdown Summary */}
-              <div className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50/50 p-3 sm:p-4">
+              <div className="mt-4 rounded-xl border border-white/10 bg-white/[0.03] p-3 sm:p-4">
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                  <div className="rounded-lg bg-white/80 p-2.5 border border-emerald-100">
-                    <span className="text-xs text-navy-600/70 font-medium">Total Standard Value:</span>
-                    <p className="text-base sm:text-lg font-bold text-navy-900 mt-0.5">
+                  <div className="rounded-xl bg-black/40 p-2.5 border border-white/10">
+                    <span className="text-xs text-slate-400 font-medium">Total Standard Value:</span>
+                    <p className="text-base sm:text-lg font-bold text-white mt-0.5">
                       {formatINR(totalPrice)}
                     </p>
                   </div>
 
-                  <div className="rounded-lg bg-white/80 p-2.5 border border-emerald-100">
-                    <Label className="text-xs text-emerald-800 font-semibold">Special Discount (₹)</Label>
+                  <div className="rounded-xl bg-black/40 p-2.5 border border-white/10">
+                    <Label className="text-xs text-emerald-400 font-semibold">Special Discount (₹)</Label>
                     <Input
                       type="number"
                       step="0.01"
@@ -828,13 +824,13 @@ function MainPackageBundleModal({
                       value={discountPrice}
                       onChange={(e) => setDiscountPrice(e.target.value)}
                       placeholder="e.g. 25000"
-                      className="mt-1 font-semibold text-emerald-700 bg-white"
+                      className="mt-1 font-semibold text-emerald-300"
                     />
                   </div>
 
-                  <div className="rounded-lg bg-white/80 p-2.5 border border-emerald-100">
-                    <span className="text-xs text-brand-800 font-bold">Final Package Price:</span>
-                    <p className="text-lg sm:text-xl font-extrabold text-brand-700 mt-0.5">
+                  <div className="rounded-xl bg-amber-500/15 p-2.5 border border-amber-500/30">
+                    <span className="text-xs text-amber-400 font-bold">Final Package Price:</span>
+                    <p className="text-lg sm:text-xl font-extrabold text-amber-300 mt-0.5">
                       {formatINR(finalPrice)}
                     </p>
                   </div>
@@ -891,11 +887,11 @@ function MainPackageBundleModal({
         </div>
 
         {/* Sticky Footer */}
-        <div className="flex shrink-0 items-center justify-end gap-3 border-t border-brand-100 bg-gray-50/80 px-4 py-3 sm:px-6">
+        <div className="flex shrink-0 items-center justify-end gap-3 border-t border-white/10 bg-[#090c14] px-4 py-3 sm:px-6">
           <Button type="button" variant="secondary" onClick={onClose}>
             Cancel
           </Button>
-          <Button type="submit" form="bundle-form" disabled={submitting}>
+          <Button type="submit" form="bundle-form" variant="primary" disabled={submitting}>
             {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
             {bundle ? "Save Changes" : "Create Master Package"}
           </Button>
@@ -975,26 +971,28 @@ function PackageModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-2 sm:p-4 backdrop-blur-xs">
-      <div className="flex max-h-[90vh] w-full max-w-lg flex-col rounded-2xl bg-white shadow-2xl overflow-hidden">
-        <div className="flex shrink-0 items-center justify-between border-b border-brand-100 px-4 py-3.5 sm:px-6">
-          <div className="flex items-center gap-2">
-            <PackagePlus className="h-5 w-5 text-brand-600" />
-            <h3 className="text-base sm:text-lg font-bold text-navy-900">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-2 sm:p-4 backdrop-blur-md">
+      <div className="flex max-h-[90vh] w-full max-w-lg flex-col rounded-2xl border border-white/10 bg-[#0d121e] text-white shadow-2xl overflow-hidden backdrop-blur-2xl">
+        <div className="flex shrink-0 items-center justify-between border-b border-white/10 bg-[#090c14] px-4 py-3.5 sm:px-6">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-400">
+              <PackagePlus className="h-4 w-4" />
+            </div>
+            <h3 className="text-base sm:text-lg font-bold text-white">
               {initialPackage ? "Edit Service Item & Price" : "Add Service Item & Price"}
             </h3>
           </div>
           <button
             onClick={onClose}
-            className="rounded-lg p-1.5 text-navy-400 hover:bg-gray-100 hover:text-navy-700"
+            className="rounded-lg p-1.5 text-slate-400 hover:bg-white/10 hover:text-white transition"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 bg-[#0d121e]">
           {error && (
-            <div className="rounded-lg bg-red-50 p-3 text-xs text-red-600">{error}</div>
+            <div className="rounded-xl border border-red-500/30 bg-red-500/15 p-3 text-xs text-red-300">{error}</div>
           )}
 
           <form id="package-item-form" onSubmit={handleSubmit} className="space-y-4">
@@ -1029,7 +1027,7 @@ function PackageModal({
             <div>
               <div className="flex items-center justify-between">
                 <Label>Standard Price (₹) *</Label>
-                <span className="text-xs text-navy-600/60">
+                <span className="text-xs text-slate-400">
                   {isCustom ? "Disabled for custom pricing" : "e.g. 25000"}
                 </span>
               </div>
@@ -1056,17 +1054,17 @@ function PackageModal({
               />
             </div>
 
-            <div className="rounded-lg border border-brand-100 bg-brand-50/30 p-3">
-              <label className="flex cursor-pointer items-start gap-2.5 text-sm text-navy-800">
+            <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3.5">
+              <label className="flex cursor-pointer items-start gap-2.5 text-sm text-slate-300">
                 <input
                   type="checkbox"
                   checked={isCustom}
                   onChange={(e) => setIsCustom(e.target.checked)}
-                  className="mt-1 h-4 w-4 rounded border-brand-300 text-brand-600 focus:ring-brand-500"
+                  className="mt-1 h-4 w-4 rounded border-white/20 bg-black/40 text-amber-500 focus:ring-amber-400"
                 />
                 <div>
-                  <span className="font-medium text-xs sm:text-sm">Custom Price Option</span>
-                  <p className="text-xs text-navy-600/60">
+                  <span className="font-bold text-xs sm:text-sm text-white">Custom Price Option</span>
+                  <p className="text-xs text-slate-400">
                     Enable if price is entered manually per invoice.
                   </p>
                 </div>
@@ -1075,11 +1073,11 @@ function PackageModal({
           </form>
         </div>
 
-        <div className="flex shrink-0 items-center justify-end gap-3 border-t border-brand-100 bg-gray-50/80 px-4 py-3 sm:px-6">
+        <div className="flex shrink-0 items-center justify-end gap-3 border-t border-white/10 bg-[#090c14] px-4 py-3 sm:px-6">
           <Button type="button" variant="secondary" onClick={onClose}>
             Cancel
           </Button>
-          <Button type="submit" form="package-item-form" disabled={submitting}>
+          <Button type="submit" form="package-item-form" variant="primary" disabled={submitting}>
             {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
             {initialPackage ? "Save Changes" : "Create Item"}
           </Button>
@@ -1136,24 +1134,26 @@ function CategoryModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-2 sm:p-4 backdrop-blur-xs">
-      <div className="flex max-h-[90vh] w-full max-w-md flex-col rounded-2xl bg-white shadow-2xl overflow-hidden">
-        <div className="flex shrink-0 items-center justify-between border-b border-brand-100 px-4 py-3.5 sm:px-6">
-          <div className="flex items-center gap-2">
-            <FolderPlus className="h-5 w-5 text-brand-600" />
-            <h3 className="text-base sm:text-lg font-bold text-navy-900">Add Service Category</h3>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-2 sm:p-4 backdrop-blur-md">
+      <div className="flex max-h-[90vh] w-full max-w-md flex-col rounded-2xl border border-white/10 bg-[#0d121e] text-white shadow-2xl overflow-hidden backdrop-blur-2xl">
+        <div className="flex shrink-0 items-center justify-between border-b border-white/10 bg-[#090c14] px-4 py-3.5 sm:px-6">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-400">
+              <FolderPlus className="h-4 w-4" />
+            </div>
+            <h3 className="text-base sm:text-lg font-bold text-white">Add Service Category</h3>
           </div>
           <button
             onClick={onClose}
-            className="rounded-lg p-1.5 text-navy-400 hover:bg-gray-100 hover:text-navy-700"
+            className="rounded-lg p-1.5 text-slate-400 hover:bg-white/10 hover:text-white transition"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 bg-[#0d121e]">
           {error && (
-            <div className="mb-4 rounded-lg bg-red-50 p-3 text-xs text-red-600">{error}</div>
+            <div className="mb-4 rounded-xl border border-red-500/30 bg-red-500/15 p-3 text-xs text-red-300">{error}</div>
           )}
 
           <form id="category-form" onSubmit={handleSubmit} className="space-y-4">
@@ -1181,11 +1181,11 @@ function CategoryModal({
           </form>
         </div>
 
-        <div className="flex shrink-0 items-center justify-end gap-3 border-t border-brand-100 bg-gray-50/80 px-4 py-3 sm:px-6">
+        <div className="flex shrink-0 items-center justify-end gap-3 border-t border-white/10 bg-[#090c14] px-4 py-3 sm:px-6">
           <Button type="button" variant="secondary" onClick={onClose}>
             Cancel
           </Button>
-          <Button type="submit" form="category-form" disabled={submitting}>
+          <Button type="submit" form="category-form" variant="primary" disabled={submitting}>
             {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
             Save Category
           </Button>

@@ -79,30 +79,30 @@ model GeneralTerms {
 }
 
 model Invoice {
-  id                  String                @id @default(cuid())
-  invoiceNumber       String                @unique(map: "Invoice_invoiceNumber_key")
+  id                  String            @id @default(cuid())
+  invoiceNumber       String            @unique(map: "Invoice_invoiceNumber_key")
   invoiceDate         DateTime
   dueDate             DateTime
-  paymentStatus       PaymentStatus         @default(UNPAID)
+  paymentStatus       PaymentStatus     @default(UNPAID)
   customerId          String
-  gstEnabled          Boolean               @default(true)
-  gstPercent          Float                 @default(18)
-  subtotal            Float                 @default(0)
-  discountAmount      Float                 @default(0)
-  taxableAmount       Float                 @default(0)
-  gstAmount           Float                 @default(0)
-  grandTotal          Float                 @default(0)
-  amountPaid          Float                 @default(0)
-  balanceDue          Float                 @default(0)
-  amountInWords       String                @default("")
-  paymentMethod       String                @default("UPI")
-  upiId               String                @default("")
-  transactionRef      String                @default("")
-  selectedCategoryIds String                @default("")
-  notes               String                @default("") @db.Text
-  createdAt           DateTime              @default(now())
-  updatedAt           DateTime              @updatedAt
-  customer            Customer              @relation(fields: [customerId], references: [id], map: "Invoice_customerId_fkey")
+  gstEnabled          Boolean           @default(true)
+  gstPercent          Float             @default(18)
+  subtotal            Float             @default(0)
+  discountAmount      Float             @default(0)
+  taxableAmount       Float             @default(0)
+  gstAmount           Float             @default(0)
+  grandTotal          Float             @default(0)
+  amountPaid          Float             @default(0)
+  balanceDue          Float             @default(0)
+  amountInWords       String            @default("")
+  paymentMethod       String            @default("UPI")
+  upiId               String            @default("")
+  transactionRef      String            @default("")
+  selectedCategoryIds String            @default("")
+  notes               String            @default("") @db.Text
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+  customer            Customer          @relation(fields: [customerId], references: [id], map: "Invoice_customerId_fkey")
   lineItems           InvoiceLineItem[]
 
   @@index([customerId], map: "Invoice_customerId_fkey")
@@ -129,17 +129,17 @@ model InvoiceLineItem {
 }
 
 model Package {
-  id              String          @id @default(cuid())
-  name            String
-  price           Float
-  description     String          @default("")
-  isCustom        Boolean         @default(false)
-  sortOrder       Int             @default(0)
-  isActive        Boolean         @default(true)
-  categoryId      String
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-  category        ServiceCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade, map: "Package_categoryId_fkey")
+  id          String          @id @default(cuid())
+  name        String
+  price       Float
+  description String          @default("")
+  isCustom    Boolean         @default(false)
+  sortOrder   Int             @default(0)
+  isActive    Boolean         @default(true)
+  categoryId  String
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  category    ServiceCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade, map: "Package_categoryId_fkey")
 
   @@index([categoryId], map: "Package_categoryId_fkey")
   @@map("package")
@@ -149,7 +149,7 @@ model PackageBundle {
   id                String   @id @default(cuid())
   name              String
   subtitle          String   @default("")
-  tier              String   @default("Premium") // "Standard" | "Professional" | "Premium" | "Custom"
+  tier              String   @default("Premium")
   items             String   @db.Text
   totalPrice        Float    @default(0)
   discountPrice     Float    @default(0)
@@ -167,25 +167,25 @@ model PackageBundle {
 }
 
 model ServiceCategory {
-  id                 String              @id @default(cuid())
-  name               String              @unique(map: "ServiceCategory_name_key")
-  description        String              @default("")
-  sortOrder          Int                 @default(0)
-  isActive           Boolean             @default(true)
-  createdAt          DateTime            @default(now())
-  updatedAt          DateTime            @updatedAt
-  packages           Package[]
-  terms              TermsAndConditions?
+  id          String              @id @default(cuid())
+  name        String              @unique(map: "ServiceCategory_name_key")
+  description String              @default("")
+  sortOrder   Int                 @default(0)
+  isActive    Boolean             @default(true)
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  packages    Package[]
+  terms       TermsAndConditions?
 
   @@map("servicecategory")
 }
 
 model TermsAndConditions {
-  id              String          @id @default(cuid())
-  categoryId      String          @unique(map: "TermsAndConditions_categoryId_key")
-  content         String          @db.Text
-  updatedAt       DateTime        @updatedAt
-  category        ServiceCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade, map: "TermsAndConditions_categoryId_fkey")
+  id         String          @id @default(cuid())
+  categoryId String          @unique(map: "TermsAndConditions_categoryId_key")
+  content    String          @db.Text
+  updatedAt  DateTime        @updatedAt
+  category   ServiceCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade, map: "TermsAndConditions_categoryId_fkey")
 
   @@map("termsandconditions")
 }

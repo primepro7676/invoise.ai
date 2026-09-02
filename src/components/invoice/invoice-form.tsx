@@ -312,17 +312,17 @@ export function InvoiceForm({
 
       {/* Quick Load Predefined Package Bundle Preset */}
       {bundles.length > 0 && (
-        <Card className="border-brand-300 bg-linear-to-r from-brand-50/70 to-emerald-50/50 p-4 shadow-sm">
+        <Card className="border-amber-500/30 bg-gradient-to-r from-amber-500/10 via-[#0f1422]/90 to-[#0c0f18]/95 p-4 shadow-sm">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-600 text-white shadow-xs">
-                <Sparkles className="h-5 w-5" />
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/20 text-amber-300 shadow-xs border border-amber-500/30">
+                <Sparkles className="h-5 w-5 text-amber-400" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-navy-900">
+                <h3 className="text-sm font-bold text-white">
                   Select Predefined Package Offer (Quick Fill)
                 </h3>
-                <p className="text-xs text-navy-600/70">
+                <p className="text-xs text-slate-400">
                   Choose a saved master package to automatically fill services, standard rates, discounts & deliverables.
                 </p>
               </div>
@@ -332,7 +332,7 @@ export function InvoiceForm({
               <Select
                 value={selectedBundleId}
                 onChange={(e) => handleLoadBundle(e.target.value)}
-                className="bg-white font-medium border-brand-200 text-navy-900"
+                className="bg-black/50 font-medium border-white/15 text-white"
               >
                 <option value="">— Choose a Preset Package Bundle —</option>
                 {bundles.map((b) => (
@@ -470,8 +470,8 @@ export function InvoiceForm({
       <Card>
         <div className="mb-4 flex items-center justify-between">
           <div>
-            <h2 className="text-base font-semibold text-navy-900">Services & Standard Pricing</h2>
-            <p className="text-xs text-navy-600/70">
+            <h2 className="text-base font-bold text-white">Services & Standard Pricing</h2>
+            <p className="text-xs text-slate-400">
               Add or customize services included in this invoice.
             </p>
           </div>
@@ -487,16 +487,16 @@ export function InvoiceForm({
             const itemDiscountType = watch(`lineItems.${index}.discountType`) || "FLAT";
 
             return (
-              <div key={field.id} className="rounded-lg border border-brand-100 bg-brand-50/30 p-4">
+              <div key={field.id} className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
                 <div className="mb-3 flex items-center justify-between">
-                  <span className="text-xs font-semibold uppercase text-brand-700">
+                  <span className="text-xs font-bold uppercase tracking-wider text-amber-400">
                     Service {index + 1}
                   </span>
                   {fields.length > 1 && (
                     <button
                       type="button"
                       onClick={() => remove(index)}
-                      className="rounded p-1 text-red-500 hover:bg-red-50"
+                      className="rounded-lg p-1.5 text-red-400 hover:bg-red-500/10 transition"
                       aria-label="Delete service"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -532,7 +532,7 @@ export function InvoiceForm({
                     />
                   </div>
                   <div className="lg:col-span-4">
-                    <Label>Package / Item</Label>
+                    <Label>Package / Item (Optional)</Label>
                     <Controller
                       control={control}
                       name={`lineItems.${index}.packageName`}
@@ -542,13 +542,14 @@ export function InvoiceForm({
                         return hasPredefined ? (
                           <Select
                             {...f}
-                            disabled={!categoryName}
                             onChange={(e) => {
                               f.onChange(e.target.value);
-                              handlePackageChange(index, categoryName, e.target.value);
+                              if (e.target.value) {
+                                handlePackageChange(index, categoryName, e.target.value);
+                              }
                             }}
                           >
-                            <option value="">— Select Package —</option>
+                            <option value="">— Select Package (Optional) —</option>
                             {pkgs.map((p) => (
                               <option key={p.id} value={p.name}>
                                 {p.name} {p.isCustom ? "" : `— ${formatINR(p.price)}`}
@@ -562,7 +563,7 @@ export function InvoiceForm({
                           <Input
                             value={f.value}
                             onChange={(e) => f.onChange(e.target.value)}
-                            placeholder="e.g. Website Development"
+                            placeholder="Service / item name (Optional)"
                           />
                         );
                       }}
@@ -602,10 +603,10 @@ export function InvoiceForm({
                         <button
                           type="button"
                           onClick={() => setValue(`lineItems.${index}.discountType`, "FLAT")}
-                          className={`rounded px-1.5 py-0.5 font-medium transition ${
+                          className={`rounded-lg px-2 py-0.5 text-xs font-semibold transition ${
                             itemDiscountType === "FLAT"
-                              ? "bg-brand-600 text-white"
-                              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                              ? "bg-amber-500 text-black shadow-sm font-bold"
+                              : "bg-white/10 text-slate-300 hover:bg-white/15"
                           }`}
                         >
                           ₹ (Rupees)
@@ -613,10 +614,10 @@ export function InvoiceForm({
                         <button
                           type="button"
                           onClick={() => setValue(`lineItems.${index}.discountType`, "PERCENT")}
-                          className={`rounded px-1.5 py-0.5 font-medium transition ${
+                          className={`rounded-lg px-2 py-0.5 text-xs font-semibold transition ${
                             itemDiscountType === "PERCENT"
-                              ? "bg-brand-600 text-white"
-                              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                              ? "bg-amber-500 text-black shadow-sm font-bold"
+                              : "bg-white/10 text-slate-300 hover:bg-white/15"
                           }`}
                         >
                           % (Percent)
@@ -658,21 +659,23 @@ export function InvoiceForm({
         </div>
       </Card>
 
-      {/* Special Offer & Overall Discount Section */}
-      <Card className="border-emerald-200 bg-emerald-50/20">
-        <div className="mb-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Tag className="h-5 w-5 text-emerald-600" />
+      {/* Special Package Offer & Overall Discount */}
+      <Card className="border-amber-500/30 bg-gradient-to-br from-amber-500/10 via-[#0e1320] to-[#080b11]">
+        <div className="mb-4 flex items-center justify-between border-b border-white/10 pb-3">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/30">
+              <Tag className="h-4 w-4" />
+            </div>
             <div>
-              <h2 className="text-base font-semibold text-navy-900">
+              <h2 className="text-base font-bold text-white">
                 Special Package Offer & Overall Discount (Optional)
               </h2>
-              <p className="text-xs text-navy-600/70">
+              <p className="text-xs text-slate-400">
                 Apply a special package discount in Rupees (₹) or Percentage (%) on the entire invoice.
               </p>
             </div>
           </div>
-          <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-semibold text-emerald-800">
+          <span className="rounded-full border border-amber-500/30 bg-amber-500/15 px-2.5 py-0.5 text-xs font-semibold text-amber-300">
             Special Pricing
           </span>
         </div>
@@ -685,10 +688,10 @@ export function InvoiceForm({
               <button
                 type="button"
                 onClick={() => setValue("discountType", "FLAT")}
-                className={`flex flex-1 items-center justify-center gap-1 rounded-lg border py-2 text-sm font-medium transition ${
+                className={`flex flex-1 items-center justify-center gap-1 rounded-xl border py-2.5 text-sm font-semibold transition ${
                   discountType === "FLAT"
-                    ? "border-brand-600 bg-brand-600 text-white shadow-sm"
-                    : "border-gray-200 bg-white text-navy-700 hover:bg-gray-50"
+                    ? "border-amber-500 bg-amber-500 text-black shadow-lg shadow-amber-500/20 font-bold"
+                    : "border-white/15 bg-white/5 text-slate-300 hover:bg-white/10"
                 }`}
               >
                 <IndianRupee className="h-4 w-4" /> Rupees (₹)
@@ -696,10 +699,10 @@ export function InvoiceForm({
               <button
                 type="button"
                 onClick={() => setValue("discountType", "PERCENT")}
-                className={`flex flex-1 items-center justify-center gap-1 rounded-lg border py-2 text-sm font-medium transition ${
+                className={`flex flex-1 items-center justify-center gap-1 rounded-xl border py-2.5 text-sm font-semibold transition ${
                   discountType === "PERCENT"
-                    ? "border-brand-600 bg-brand-600 text-white shadow-sm"
-                    : "border-gray-200 bg-white text-navy-700 hover:bg-gray-50"
+                    ? "border-amber-500 bg-amber-500 text-black shadow-lg shadow-amber-500/20 font-bold"
+                    : "border-white/15 bg-white/5 text-slate-300 hover:bg-white/10"
                 }`}
               >
                 <Percent className="h-4 w-4" /> Percent (%)
@@ -737,37 +740,37 @@ export function InvoiceForm({
         </div>
 
         {/* Live breakdown preview */}
-        <div className="mt-4 rounded-lg border border-emerald-200/80 bg-white p-3.5 text-sm">
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+        <div className="mt-4 rounded-xl border border-white/10 bg-white/[0.03] p-4 text-sm">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <div>
-              <span className="text-xs text-navy-600/70">Total Standard Value:</span>
-              <p className="font-semibold text-navy-900">{formatINR(totals.subtotal)}</p>
+              <span className="text-xs text-slate-400">Total Standard Value:</span>
+              <p className="font-bold text-white text-base">{formatINR(totals.subtotal)}</p>
             </div>
             <div>
-              <span className="text-xs font-medium text-emerald-600">Total Discount Applied:</span>
-              <p className="font-semibold text-emerald-700">- {formatINR(totals.discountAmount)}</p>
+              <span className="text-xs font-medium text-emerald-400">Total Discount Applied:</span>
+              <p className="font-bold text-emerald-300 text-base">- {formatINR(totals.discountAmount)}</p>
             </div>
             <div>
-              <span className="text-xs text-navy-600/70">Final Package Price (excl. GST):</span>
-              <p className="font-semibold text-brand-700">{formatINR(totals.taxableAmount)}</p>
+              <span className="text-xs text-slate-400">Final Package Price (excl. GST):</span>
+              <p className="font-bold text-amber-400 text-base">{formatINR(totals.taxableAmount)}</p>
             </div>
           </div>
         </div>
       </Card>
 
       {/* Package Scope & Deliverables (Optional) */}
-      <Card className="border-brand-200">
+      <Card className="border-white/10">
         <div
           className="flex cursor-pointer items-center justify-between"
           onClick={() => setShowPackageScope(!showPackageScope)}
         >
           <div className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-brand-600" />
+            <Sparkles className="h-5 w-5 text-amber-400" />
             <div>
-              <h2 className="text-base font-semibold text-navy-900">
+              <h2 className="text-base font-bold text-white">
                 Package Scope, Deliverables & Payment Terms (Optional)
               </h2>
-              <p className="text-xs text-navy-600/70">
+              <p className="text-xs text-slate-400">
                 Package branding, platforms, deliverables list, and advance payment terms.
               </p>
             </div>
@@ -859,11 +862,11 @@ export function InvoiceForm({
       {/* GST + Payment */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card>
-          <h2 className="mb-4 text-base font-semibold text-navy-900">GST</h2>
-          <div className="mb-4 flex items-center justify-between rounded-lg border border-brand-100 bg-brand-50/40 px-4 py-3">
+          <h2 className="mb-4 text-base font-bold text-white">GST</h2>
+          <div className="mb-4 flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
             <div>
-              <p className="text-sm font-medium text-navy-900">Apply GST</p>
-              <p className="text-xs text-navy-600/60">
+              <p className="text-sm font-semibold text-white">Apply GST</p>
+              <p className="text-xs text-slate-400">
                 Default is 18% — toggle off to generate a non-GST invoice
               </p>
             </div>
@@ -875,11 +878,11 @@ export function InvoiceForm({
                   type="button"
                   onClick={() => f.onChange(!f.value)}
                   className={`relative h-6 w-11 rounded-full transition ${
-                    f.value ? "bg-brand-600" : "bg-gray-300"
+                    f.value ? "bg-amber-500 shadow-md shadow-amber-500/20" : "bg-white/20"
                   }`}
                 >
                   <span
-                    className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition ${
+                    className={`absolute top-0.5 h-5 w-5 rounded-full bg-black shadow transition ${
                       f.value ? "left-5" : "left-0.5"
                     }`}
                   />
@@ -936,9 +939,9 @@ export function InvoiceForm({
       </Card>
 
       {/* Totals summary */}
-      <Card className="border-brand-200 bg-brand-50/40">
-        <h2 className="mb-4 text-base font-semibold text-navy-900">Invoice Summary</h2>
-        <div className="grid grid-cols-2 gap-y-2 text-sm sm:grid-cols-4">
+      <Card className="border-amber-500/30 bg-gradient-to-br from-amber-500/10 via-[#0e1320] to-[#080b11]">
+        <h2 className="mb-4 text-base font-bold text-white">Invoice Summary</h2>
+        <div className="grid grid-cols-2 gap-y-3 text-sm sm:grid-cols-4">
           <SummaryItem label="Total Value (Subtotal)" value={formatINR(totals.subtotal)} />
           <SummaryItem
             label="Special Discount"
@@ -951,15 +954,15 @@ export function InvoiceForm({
             value={formatINR(totals.gstAmount)}
           />
         </div>
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg bg-brand-600 px-4 py-3 text-white">
-          <span className="text-sm font-medium">Grand Total</span>
-          <span className="text-xl font-bold">{formatINR(totals.grandTotal)}</span>
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 px-5 py-3.5 text-black shadow-lg shadow-amber-500/20">
+          <span className="text-sm font-bold uppercase tracking-wider">Grand Total</span>
+          <span className="text-2xl font-black">{formatINR(totals.grandTotal)}</span>
         </div>
-        <div className="mt-3 grid grid-cols-2 gap-y-2 text-sm">
+        <div className="mt-4 grid grid-cols-2 gap-y-2 text-sm border-t border-white/10 pt-3">
           <SummaryItem label="Amount Paid" value={formatINR(totals.amountPaid)} />
           <SummaryItem label="Balance Due" value={formatINR(totals.balanceDue)} />
         </div>
-        <p className="mt-3 text-xs italic text-navy-600/70">{numberToWordsINR(totals.grandTotal)}</p>
+        <p className="mt-3 text-xs italic text-slate-400">{numberToWordsINR(totals.grandTotal)}</p>
       </Card>
 
       <div className="flex justify-end gap-3 pb-8">
@@ -994,8 +997,8 @@ function SummaryItem({
 }) {
   return (
     <div>
-      <p className="text-xs text-navy-600/60">{label}</p>
-      <p className={`font-semibold ${highlight ? "text-emerald-700" : "text-navy-900"}`}>{value}</p>
+      <p className="text-xs text-slate-400 font-medium">{label}</p>
+      <p className={`text-base font-bold ${highlight ? "text-emerald-300" : "text-white"}`}>{value}</p>
     </div>
   );
 }

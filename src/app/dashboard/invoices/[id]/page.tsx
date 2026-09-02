@@ -34,11 +34,13 @@ export default async function InvoiceDetailPage({
     : [];
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+    <div className="space-y-6 pb-12">
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold text-navy-900">{invoice.invoiceNumber}</h1>
-          <p className="text-sm text-navy-600/70">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            {invoice.invoiceNumber}
+          </h1>
+          <p className="mt-1 text-xs sm:text-sm text-slate-400">
             Issued {formatDate(invoice.invoiceDate)} · Due {formatDate(invoice.dueDate)}
           </p>
         </div>
@@ -55,15 +57,15 @@ export default async function InvoiceDetailPage({
 
       {/* Package Header Banner (if present) */}
       {packageMeta.packageTitle && (
-        <div className="rounded-xl border border-brand-200 bg-brand-50/50 p-4 shadow-sm">
-          <div className="flex items-center gap-2 text-brand-700">
+        <div className="rounded-2xl border border-amber-500/30 bg-gradient-to-r from-amber-500/10 via-[#0e1320]/90 to-[#080b11] p-4 shadow-xl backdrop-blur-xl">
+          <div className="flex items-center gap-2 text-amber-400">
             <Sparkles className="h-5 w-5" />
-            <h2 className="text-lg font-bold uppercase tracking-wide">
+            <h2 className="text-base sm:text-lg font-bold uppercase tracking-wide text-white">
               {packageMeta.packageTitle}
             </h2>
           </div>
           {packageMeta.packageSubtitle && (
-            <p className="mt-1 text-sm font-medium text-navy-700">
+            <p className="mt-1 text-xs sm:text-sm font-medium text-slate-300">
               {packageMeta.packageSubtitle}
             </p>
           )}
@@ -74,64 +76,56 @@ export default async function InvoiceDetailPage({
         <div className="space-y-6 lg:col-span-2">
           {/* Bill To */}
           <Card>
-            <h2 className="mb-3 text-sm font-semibold uppercase text-brand-700">Bill To</h2>
-            <p className="text-base font-semibold text-navy-900">{invoice.customer.companyName}</p>
+            <h2 className="mb-4 text-xs font-bold uppercase tracking-wider text-amber-400">Bill To</h2>
+            <p className="text-lg font-extrabold text-white">{invoice.customer.companyName}</p>
             {invoice.customer.contactPerson && (
-              <p className="text-sm text-navy-600/70">Attn: {invoice.customer.contactPerson}</p>
+              <p className="mt-0.5 text-xs text-slate-300">Attn: {invoice.customer.contactPerson}</p>
             )}
-            <p className="mt-1 text-sm text-navy-700">{invoice.customer.billingAddress}</p>
-            <p className="text-sm text-navy-700">
+            <p className="mt-2 text-sm text-slate-300">{invoice.customer.billingAddress}</p>
+            <p className="text-sm text-slate-400">
               {invoice.customer.city}, {invoice.customer.state} — {invoice.customer.pincode}
             </p>
-            <p className="text-sm text-navy-700">{invoice.customer.country}</p>
-            <div className="mt-2 grid grid-cols-2 gap-2 text-sm text-navy-600/80">
-              <p>Phone: {invoice.customer.phone}</p>
-              <p>Email: {invoice.customer.email}</p>
-              {invoice.customer.gstin && <p>GSTIN: {invoice.customer.gstin}</p>}
-              <p>Place of Supply: {invoice.customer.placeOfSupply}</p>
+            <p className="text-sm text-slate-400">{invoice.customer.country}</p>
+            <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 text-xs border-t border-white/10 pt-3">
+              <p className="text-slate-400">Phone: <span className="text-white font-medium">{invoice.customer.phone}</span></p>
+              <p className="text-slate-400">Email: <span className="text-white font-medium">{invoice.customer.email || "—"}</span></p>
+              {invoice.customer.gstin && (
+                <p className="text-slate-400">GSTIN: <span className="text-amber-300 font-semibold">{invoice.customer.gstin}</span></p>
+              )}
+              <p className="text-slate-400">Place of Supply: <span className="text-white font-medium">{invoice.customer.placeOfSupply}</span></p>
             </div>
           </Card>
 
           {/* Services Table */}
           <Card>
-            <h2 className="mb-3 text-sm font-semibold uppercase text-brand-700">
+            <h2 className="mb-4 text-xs font-bold uppercase tracking-wider text-amber-400">
               Services & Packages
             </h2>
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+              <table className="w-full text-xs">
                 <thead>
-                  <tr className="border-b border-brand-100 text-left text-xs uppercase text-navy-600/60">
-                    <th className="py-2 pr-3">Service</th>
-                    <th className="py-2 pr-3">Package</th>
-                    <th className="py-2 pr-3 text-center">Qty</th>
-                    <th className="py-2 pr-3 text-right">Standard Price</th>
-                    <th className="py-2 pr-3 text-right">Total</th>
+                  <tr className="border-b border-white/10 text-left uppercase text-slate-400">
+                    <th className="py-3 pr-3 font-semibold">Service</th>
+                    <th className="py-3 pr-3 font-semibold">Package / Item</th>
+                    <th className="py-3 pr-3 text-center font-semibold">Qty</th>
+                    <th className="py-3 pr-3 text-right font-semibold">Standard Price</th>
+                    <th className="py-3 pr-3 text-right font-semibold">Total</th>
                   </tr>
                 </thead>
-                <tbody>
-                  {invoice.lineItems.map(
-                    (li: {
-                      id: string;
-                      categoryName: string;
-                      packageName: string;
-                      quantity: number;
-                      rate: number;
-                      gstPercent: number;
-                      total: number;
-                    }) => (
-                      <tr key={li.id} className="border-b border-brand-50 last:border-0">
-                        <td className="py-2.5 pr-3 font-medium text-navy-900">
-                          {li.categoryName}
-                        </td>
-                        <td className="py-2.5 pr-3 text-navy-700">{li.packageName}</td>
-                        <td className="py-2.5 pr-3 text-center text-navy-700">{li.quantity}</td>
-                        <td className="py-2.5 pr-3 text-right text-navy-700">{formatINR(li.rate)}</td>
-                        <td className="py-2.5 pr-3 text-right font-medium text-navy-900">
-                          {formatINR(li.total)}
-                        </td>
-                      </tr>
-                    )
-                  )}
+                <tbody className="divide-y divide-white/5">
+                  {invoice.lineItems.map((li) => (
+                    <tr key={li.id} className="transition hover:bg-white/[0.03]">
+                      <td className="py-3 pr-3 font-semibold text-white">
+                        {li.categoryName}
+                      </td>
+                      <td className="py-3 pr-3 text-slate-300">{li.packageName}</td>
+                      <td className="py-3 pr-3 text-center text-slate-300">{li.quantity}</td>
+                      <td className="py-3 pr-3 text-right text-slate-400">{formatINR(li.rate)}</td>
+                      <td className="py-3 pr-3 text-right font-bold text-white">
+                        {formatINR(li.total)}
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
@@ -139,23 +133,23 @@ export default async function InvoiceDetailPage({
 
           {/* Package Deliverables & Scope (if any) */}
           {(inclusions.length > 0 || platforms.length > 0 || packageMeta.paymentTermsText || packageMeta.specialOfferNote) && (
-            <Card className="border-emerald-200 bg-emerald-50/10">
-              <h2 className="mb-3 text-sm font-semibold uppercase text-brand-700">
+            <Card className="border-white/10">
+              <h2 className="mb-4 text-xs font-bold uppercase tracking-wider text-amber-400">
                 Package Scope & Deliverables
               </h2>
 
               {platforms.length > 0 && (
                 <div className="mb-4">
-                  <p className="text-xs font-semibold uppercase text-navy-700">
-                    Social Media Platforms Included
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                    Platforms Included
                   </p>
-                  <div className="mt-1.5 flex flex-wrap gap-2">
+                  <div className="mt-2 flex flex-wrap gap-2">
                     {platforms.map((platform, i) => (
                       <span
                         key={i}
-                        className="inline-flex items-center gap-1 rounded-md bg-brand-50 px-2.5 py-1 text-xs font-medium text-brand-800"
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1 text-xs font-medium text-slate-200 backdrop-blur-md"
                       >
-                        <CheckCircle2 className="h-3.5 w-3.5 text-brand-600" />
+                        <CheckCircle2 className="h-3.5 w-3.5 text-amber-400" />
                         {platform}
                       </span>
                     ))}
@@ -165,13 +159,13 @@ export default async function InvoiceDetailPage({
 
               {inclusions.length > 0 && (
                 <div className="mb-4">
-                  <p className="text-xs font-semibold uppercase text-navy-700">
-                    Package Includes & Deliverables
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                    Deliverables & Inclusions
                   </p>
                   <ul className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
                     {inclusions.map((item, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm text-navy-800">
-                        <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+                      <li key={i} className="flex items-start gap-2 text-xs text-slate-300">
+                        <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-400" />
                         <span>{item}</span>
                       </li>
                     ))}
@@ -180,16 +174,16 @@ export default async function InvoiceDetailPage({
               )}
 
               {packageMeta.paymentTermsText && (
-                <div className="mb-3 rounded-lg border border-brand-100 bg-white p-3">
-                  <p className="text-xs font-semibold uppercase text-brand-800">Payment Terms</p>
-                  <p className="mt-1 whitespace-pre-line text-sm text-navy-700">
+                <div className="mb-3 rounded-xl border border-white/10 bg-white/[0.03] p-3.5">
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-amber-400">Payment Terms</p>
+                  <p className="mt-1 whitespace-pre-line text-xs text-slate-300">
                     {packageMeta.paymentTermsText}
                   </p>
                 </div>
               )}
 
               {packageMeta.specialOfferNote && (
-                <p className="text-xs font-medium italic text-navy-600">
+                <p className="text-xs font-medium italic text-slate-400">
                   {packageMeta.specialOfferNote}
                 </p>
               )}
@@ -198,19 +192,32 @@ export default async function InvoiceDetailPage({
 
           {/* Payment Details */}
           <Card>
-            <h2 className="mb-3 text-sm font-semibold uppercase text-brand-700">Payment Details</h2>
-            <div className="grid grid-cols-2 gap-2 text-sm text-navy-700">
-              <p>Method: {invoice.paymentMethod}</p>
-              {invoice.upiId && <p>UPI ID: {invoice.upiId}</p>}
-              {invoice.transactionRef && <p>Reference: {invoice.transactionRef}</p>}
+            <h2 className="mb-4 text-xs font-bold uppercase tracking-wider text-amber-400">Payment Details</h2>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 text-xs">
+              <div className="rounded-xl border border-white/5 bg-white/[0.02] p-3">
+                <span className="text-slate-500 uppercase text-[10px]">Method</span>
+                <p className="font-semibold text-white mt-0.5">{invoice.paymentMethod}</p>
+              </div>
+              {invoice.upiId && (
+                <div className="rounded-xl border border-white/5 bg-white/[0.02] p-3">
+                  <span className="text-slate-500 uppercase text-[10px]">UPI ID</span>
+                  <p className="font-semibold text-white mt-0.5">{invoice.upiId}</p>
+                </div>
+              )}
+              {invoice.transactionRef && (
+                <div className="rounded-xl border border-white/5 bg-white/[0.02] p-3">
+                  <span className="text-slate-500 uppercase text-[10px]">Reference</span>
+                  <p className="font-semibold text-white mt-0.5">{invoice.transactionRef}</p>
+                </div>
+              )}
             </div>
           </Card>
         </div>
 
         {/* Totals Sidebar */}
         <div className="space-y-6">
-          <Card className="border-brand-200 bg-brand-50/40">
-            <h2 className="mb-3 text-sm font-semibold uppercase text-brand-700">Invoice Summary</h2>
+          <Card className="border-amber-500/30 bg-gradient-to-br from-amber-500/10 via-[#0e1320] to-[#080b11]">
+            <h2 className="mb-4 text-xs font-bold uppercase tracking-wider text-amber-400">Invoice Summary</h2>
             <Row label="Total Value (Subtotal)" value={formatINR(invoice.subtotal)} />
 
             {invoice.discountAmount > 0 && (
@@ -231,13 +238,15 @@ export default async function InvoiceDetailPage({
               />
             )}
 
-            <div className="my-3 flex items-center justify-between rounded-lg bg-brand-600 px-3 py-2.5 text-white">
-              <span className="text-sm font-medium">Grand Total</span>
-              <span className="text-lg font-bold">{formatINR(invoice.grandTotal)}</span>
+            {/* Glowing Golden-Amber Grand Total Banner (No harsh green) */}
+            <div className="my-4 flex items-center justify-between rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 px-4 py-3.5 text-black shadow-lg shadow-amber-500/25">
+              <span className="text-xs font-bold uppercase tracking-wider">Grand Total</span>
+              <span className="text-xl font-black">{formatINR(invoice.grandTotal)}</span>
             </div>
+
             <Row label="Amount Paid" value={formatINR(invoice.amountPaid)} />
             <Row label="Balance Due" value={formatINR(invoice.balanceDue)} />
-            <p className="mt-3 text-xs italic text-navy-600/70">{invoice.amountInWords}</p>
+            <p className="mt-3 text-[11px] italic text-slate-400 border-t border-white/10 pt-3">{invoice.amountInWords}</p>
           </Card>
         </div>
       </div>
@@ -255,11 +264,11 @@ function Row({
   highlight?: boolean;
 }) {
   return (
-    <div className="flex items-center justify-between border-b border-brand-100/60 py-1.5 text-sm last:border-0">
-      <span className={highlight ? "font-medium text-emerald-700" : "text-navy-600/70"}>
+    <div className="flex items-center justify-between border-b border-white/5 py-2 text-xs last:border-0">
+      <span className={highlight ? "font-medium text-emerald-400" : "text-slate-400"}>
         {label}
       </span>
-      <span className={`font-semibold ${highlight ? "text-emerald-700" : "text-navy-900"}`}>
+      <span className={`font-bold ${highlight ? "text-emerald-300" : "text-white"}`}>
         {value}
       </span>
     </div>

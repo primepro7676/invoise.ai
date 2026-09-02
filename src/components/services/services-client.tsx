@@ -53,8 +53,8 @@ export function ServicesClient({ initialCategories }: { initialCategories: Categ
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {initialCategories.map((cat) => (
           <Card key={cat.id}>
-            <div className="mb-2 flex items-start justify-between">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-100 text-brand-700">
+            <div className="mb-3 flex items-start justify-between">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400">
                 <Layers className="h-4 w-4" />
               </div>
               <div className="flex gap-1">
@@ -63,21 +63,24 @@ export function ServicesClient({ initialCategories }: { initialCategories: Categ
                     setEditing(cat);
                     setShowForm(true);
                   }}
-                  className="rounded p-1.5 text-navy-500 hover:bg-brand-50"
+                  className="rounded-lg p-1.5 text-slate-400 hover:bg-white/10 hover:text-white transition"
                 >
                   <Pencil className="h-3.5 w-3.5" />
                 </button>
-                <button onClick={() => handleDelete(cat.id)} className="rounded p-1.5 text-red-500 hover:bg-red-50">
+                <button
+                  onClick={() => handleDelete(cat.id)}
+                  className="rounded-lg p-1.5 text-red-400 hover:bg-red-500/15 transition"
+                >
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>
               </div>
             </div>
-            <h3 className="text-sm font-semibold text-navy-900">{cat.name}</h3>
-            {cat.description && <p className="mt-1 text-xs text-navy-600/70">{cat.description}</p>}
-            <p className="mt-3 text-xs text-navy-600/60">{cat.packageCount} package(s)</p>
+            <h3 className="text-base font-bold text-white">{cat.name}</h3>
+            {cat.description && <p className="mt-1 text-xs text-slate-400">{cat.description}</p>}
+            <p className="mt-3 text-xs text-amber-300 font-semibold">{cat.packageCount} package(s)</p>
             <Link
               href="/dashboard/packages"
-              className="mt-2 inline-block text-xs font-medium text-brand-600 hover:underline"
+              className="mt-2 inline-block text-xs font-semibold text-amber-400 hover:text-amber-300 hover:underline"
             >
               Manage packages →
             </Link>
@@ -117,7 +120,7 @@ function CategoryForm({
 
   return (
     <Card>
-      <h2 className="mb-4 text-base font-semibold text-navy-900">
+      <h2 className="mb-4 text-base font-bold text-white">
         {initial ? "Edit Service Category" : "Add Service Category"}
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4">

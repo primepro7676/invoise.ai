@@ -1,7 +1,10 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
+import { Eye, ArrowLeft } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { InvoiceForm } from "@/components/invoice/invoice-form";
 import { parseInvoiceNotes } from "@/lib/validation";
+import { Button } from "@/components/ui/button";
 
 export default async function EditInvoicePage({
   params,
@@ -54,13 +57,36 @@ export default async function EditInvoicePage({
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold text-navy-900">Edit Invoice</h1>
-        <p className="text-sm text-navy-600/70">
-          Update invoice details, package scope, special discounts, payment and services.
-        </p>
+    <div className="space-y-6 pb-12">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="rounded-lg border border-amber-500/30 bg-amber-500/15 px-2 py-0.5 text-xs font-bold text-amber-300">
+              {invoice.invoiceNumber}
+            </span>
+            <h1 className="text-2xl font-extrabold text-white tracking-tight">Edit Invoice</h1>
+          </div>
+          <p className="mt-1 text-xs text-slate-400">
+            Customer: <strong className="text-white">{invoice.customer.companyName}</strong> · Update items, rates, discounts, or terms.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Link href={`/dashboard/invoices/${id}`}>
+            <Button variant="secondary" size="sm" className="gap-1.5">
+              <Eye className="h-3.5 w-3.5 text-amber-400" />
+              <span>View Details</span>
+            </Button>
+          </Link>
+          <Link href="/dashboard/invoices">
+            <Button variant="secondary" size="sm" className="gap-1.5">
+              <ArrowLeft className="h-3.5 w-3.5" />
+              <span>All Invoices</span>
+            </Button>
+          </Link>
+        </div>
       </div>
+
       <InvoiceForm mode="edit" invoiceId={id} initialValues={initial} />
     </div>
   );

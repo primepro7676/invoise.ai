@@ -59,11 +59,11 @@ export const packageBundleSchema = z.object({
 export type PackageBundleFormValues = z.infer<typeof packageBundleSchema>;
 
 export const lineItemSchema = z.object({
-  categoryName: z.string().min(1, "Select a service"),
-  packageName: z.string().min(1, "Select a package"),
+  categoryName: z.string().optional().default(""),
+  packageName: z.string().optional().default(""),
   description: z.string().optional().default(""),
-  quantity: z.coerce.number().min(0.01, "Quantity must be greater than 0"),
-  rate: z.coerce.number().min(0, "Price must be 0 or more"),
+  quantity: z.coerce.number().min(0.01, "Quantity must be greater than 0").default(1),
+  rate: z.coerce.number().min(0, "Price must be 0 or more").default(0),
   isCustomPrice: z.boolean().optional().default(false),
   discount: z.coerce.number().min(0).optional().default(0),
   discountType: z.enum(["FLAT", "PERCENT"]).optional().default("FLAT"),

@@ -62,37 +62,44 @@ export function CustomersClient({ initialCustomers }: { initialCustomers: Custom
 
       <Card>
         {filtered.length === 0 ? (
-          <p className="py-10 text-center text-sm text-navy-600/60">No customers found.</p>
+          <p className="py-10 text-center text-sm text-slate-500">No customers found.</p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-xs">
               <thead>
-                <tr className="border-b border-brand-100 text-left text-xs uppercase text-navy-600/60">
-                  <th className="pb-2 pr-4">Name</th>
-                  <th className="pb-2 pr-4">Contact</th>
-                  <th className="pb-2 pr-4">Location</th>
-                  <th className="pb-2 pr-4">GSTIN</th>
-                  <th className="pb-2 pr-4">Invoices</th>
-                  <th className="pb-2 pr-4" />
+                <tr className="border-b border-white/10 text-left uppercase text-slate-400">
+                  <th className="pb-3 pr-4 font-semibold">Name</th>
+                  <th className="pb-3 pr-4 font-semibold">Contact</th>
+                  <th className="pb-3 pr-4 font-semibold">Location</th>
+                  <th className="pb-3 pr-4 font-semibold">GSTIN</th>
+                  <th className="pb-3 pr-4 font-semibold">Invoices</th>
+                  <th className="pb-3 pr-4 text-right font-semibold">Action</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-white/5">
                 {filtered.map((c) => (
-                  <tr key={c.id} className="border-b border-brand-50 last:border-0 hover:bg-brand-50/40">
-                    <td className="py-2.5 pr-4 font-medium text-navy-900">{c.companyName}</td>
-                    <td className="py-2.5 pr-4 text-navy-600/80">
-                      {c.email}
+                  <tr key={c.id} className="transition hover:bg-white/[0.03]">
+                    <td className="py-3 pr-4 font-semibold text-white">{c.companyName}</td>
+                    <td className="py-3 pr-4 text-slate-300">
+                      {c.email || "—"}
                       <br />
-                      {c.phone}
+                      <span className="text-slate-400">{c.phone}</span>
                     </td>
-                    <td className="py-2.5 pr-4 text-navy-600/80">
+                    <td className="py-3 pr-4 text-slate-400">
                       {c.city}, {c.state}
                     </td>
-                    <td className="py-2.5 pr-4 text-navy-600/80">{c.gstin || "—"}</td>
-                    <td className="py-2.5 pr-4 text-navy-600/80">{c.invoiceCount}</td>
-                    <td className="py-2.5 pr-4 text-right">
-                      <Link href={`/dashboard/customers/${c.id}`} className="text-xs font-medium text-brand-600 hover:underline">
-                        View →
+                    <td className="py-3 pr-4 text-slate-300">{c.gstin || "—"}</td>
+                    <td className="py-3 pr-4">
+                      <span className="inline-block rounded-md border border-white/10 bg-white/5 px-2 py-0.5 font-bold text-amber-300 text-[11px]">
+                        {c.invoiceCount}
+                      </span>
+                    </td>
+                    <td className="py-3 pr-4 text-right">
+                      <Link
+                        href={`/dashboard/customers/${c.id}`}
+                        className="inline-flex items-center gap-1 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] font-medium text-slate-300 hover:border-amber-500/40 hover:text-amber-300 transition"
+                      >
+                        View Details →
                       </Link>
                     </td>
                   </tr>
