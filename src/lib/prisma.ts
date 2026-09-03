@@ -2,6 +2,41 @@ import "dotenv/config";
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import { PrismaClient } from "@prisma/client";
 
+import fs from "fs";
+
+function findUnixSocket(): string | undefined {
+  if (process.platform === "win32") return undefined;
+
+  if (process.env.DATABASE_SOCKET) {
+    try {
+      if (fs.existsSync(process.env.DATABASE_SOCKET)) {
+        return process.env.DATABASE_SOCKET;
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  const commonSockets = [
+    "/var/run/mysqld/mysqld.sock",
+    "/tmp/mysql.sock",
+    "/var/lib/mysql/mysql.sock",
+    "/run/mysqld/mysqld.sock",
+  ];
+
+  for (const sock of commonSockets) {
+    try {
+      if (fs.existsSync(sock)) {
+        return sock;
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  return undefined;
+}
+
 export function getDbConfig() {
   let host = process.env.DATABASE_HOST || "127.0.0.1";
   let port = Number(process.env.DATABASE_PORT || 3306);
@@ -24,6 +59,11 @@ export function getDbConfig() {
     } catch {
       // fallback
     }
+  }
+
+  // On Linux (Hostinger), if host is localhost or 127.0.0.1, try local Unix domain socket
+  if (!socketPath && (host === "localhost" || host === "127.0.0.1") && process.platform !== "win32") {
+    socketPath = findUnixSocket();
   }
 
   // Only rewrite localhost to 127.0.0.1 on Windows (where localhost resolves to IPv6 ::1)
