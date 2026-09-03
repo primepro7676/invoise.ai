@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { prisma } from "@/lib/prisma";
+import { prisma, getDbConfig } from "@/lib/prisma";
 
 export async function GET(req: NextRequest) {
   return handleSync(req);
@@ -24,6 +24,20 @@ async function handleSync(req: NextRequest) {
       { status: 401 }
     );
   }
+
+  const dbConfig = getDbConfig();
+  const envDebug = {
+    platform: process.platform,
+    dbHost: dbConfig.host,
+    dbPort: dbConfig.port,
+    dbUser: dbConfig.user,
+    dbName: dbConfig.database,
+    hasSocketPath: Boolean(dbConfig.socketPath),
+    hasPassword: Boolean(dbConfig.password),
+    hasDatabaseUrl: Boolean(process.env.DATABASE_URL),
+    hasNextAuthSecret: Boolean(process.env.NEXTAUTH_SECRET),
+    nextAuthUrl: process.env.NEXTAUTH_URL || "(not set)",
+  };
 
   try {
     // 1. Verify database connection
@@ -74,6 +88,7 @@ async function handleSync(req: NextRequest) {
       status: "success",
       message: "Admin accounts successfully synchronized!",
       loginUrl: "/login",
+      environment: envDebug,
       credentialsToUse: {
         email: "admin@primepro.ai",
         password: "Admin@789",
@@ -89,6 +104,7 @@ async function handleSync(req: NextRequest) {
       {
         status: "database_error",
         error: error?.message || "Unknown database error",
+        environment: envDebug,
         tip: "Please verify that your live database server is running, the database credentials in .env are correct, and migrations have been applied.",
       },
       { status: 500 }

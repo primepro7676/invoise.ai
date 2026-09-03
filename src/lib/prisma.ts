@@ -2,12 +2,13 @@ import "dotenv/config";
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import { PrismaClient } from "@prisma/client";
 
-function getDbConfig() {
+export function getDbConfig() {
   let host = process.env.DATABASE_HOST || "127.0.0.1";
   let port = Number(process.env.DATABASE_PORT || 3306);
   let user = process.env.DATABASE_USER || "root";
   let password = process.env.DATABASE_PASSWORD || "";
   let database = process.env.DATABASE_NAME || "generateinvoic";
+  let socketPath = process.env.DATABASE_SOCKET || undefined;
 
   if (process.env.DATABASE_URL) {
     try {
@@ -18,29 +19,39 @@ function getDbConfig() {
       password = url.password ? decodeURIComponent(url.password) : password;
       const pathname = url.pathname?.replace(/^\//, "");
       if (pathname) database = pathname;
+      const socket = url.searchParams.get("socket");
+      if (socket) socketPath = socket;
     } catch {
       // fallback
     }
   }
 
-  if (host === "localhost") {
+  // Only rewrite localhost to 127.0.0.1 on Windows (where localhost resolves to IPv6 ::1)
+  if (process.platform === "win32" && host === "localhost") {
     host = "127.0.0.1";
   }
 
-  return { host, port, user, password, database };
+  return { host, port, user, password, database, socketPath };
 }
 
 const dbConfig = getDbConfig();
 
-const adapter = new PrismaMariaDb({
-  host: dbConfig.host,
-  port: dbConfig.port,
+const adapterConfig: Record<string, unknown> = {
   user: dbConfig.user,
   password: dbConfig.password,
   database: dbConfig.database,
   connectionLimit: 10,
-  connectTimeout: 5000,
-});
+  connectTimeout: 8000,
+};
+
+if (dbConfig.socketPath) {
+  adapterConfig.socketPath = dbConfig.socketPath;
+} else {
+  adapterConfig.host = dbConfig.host;
+  adapterConfig.port = dbConfig.port;
+}
+
+const adapter = new PrismaMariaDb(adapterConfig as any);
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;

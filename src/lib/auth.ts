@@ -18,20 +18,31 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
-        const admin = await prisma.admin.findUnique({
-          where: { email: credentials.email.toLowerCase().trim() },
-        });
-        if (!admin) return null;
+        try {
+          const admin = await prisma.admin.findUnique({
+            where: { email: credentials.email.toLowerCase().trim() },
+          });
+          if (!admin) {
+            console.warn(`[AUTH] Admin user not found: ${credentials.email}`);
+            return null;
+          }
 
-        const valid = await bcrypt.compare(credentials.password, admin.password);
-        if (!valid) return null;
+          const valid = await bcrypt.compare(credentials.password, admin.password);
+          if (!valid) {
+            console.warn(`[AUTH] Invalid password for: ${credentials.email}`);
+            return null;
+          }
 
-        return {
-          id: admin.id,
-          name: admin.name,
-          email: admin.email,
-          role: admin.role,
-        };
+          return {
+            id: admin.id,
+            name: admin.name,
+            email: admin.email,
+            role: admin.role,
+          };
+        } catch (error: any) {
+          console.error(`[AUTH DB ERROR] Failed during login for ${credentials.email}:`, error?.message || error);
+          return null;
+        }
       },
     }),
   ],
@@ -49,5 +60,5 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || "default_super_secret_for_invoice_app_2026",
 };
