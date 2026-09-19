@@ -636,8 +636,9 @@ export interface InvoicePdfProps {
 // =====================================================
 // MONEY HELPER
 // =====================================================
-function money(n: number) {
-  return `Rs. ${n.toLocaleString("en-IN", {
+function money(n: number | undefined | null) {
+  const val = typeof n === "number" && !isNaN(n) ? n : 0;
+  return `Rs. ${val.toLocaleString("en-IN", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })}`;

@@ -18,6 +18,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 const patchSchema = z.object({
   paymentStatus: z.enum(["UNPAID", "PARTIALLY_PAID", "PAID", "OVERDUE"]).optional(),
   amountPaid: z.coerce.number().min(0).optional(),
+  dueDate: z.string().optional(),
 });
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -137,9 +138,14 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const balanceDue = Math.max(0, Math.round((invoice.grandTotal - amountPaid + Number.EPSILON) * 100) / 100);
   const paymentStatus = parsed.data.paymentStatus ?? (amountPaid <= 0 ? "UNPAID" : balanceDue <= 0 ? "PAID" : "PARTIALLY_PAID");
 
+  const updateData: Record<string, unknown> = { paymentStatus, amountPaid, balanceDue };
+  if (parsed.data.dueDate) {
+    updateData.dueDate = new Date(parsed.data.dueDate);
+  }
+
   const updated = await prisma.invoice.update({
     where: { id },
-    data: { paymentStatus, amountPaid, balanceDue },
+    data: updateData,
   });
   return NextResponse.json(updated);
 }

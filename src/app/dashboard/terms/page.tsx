@@ -22,8 +22,8 @@ export default async function TermsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-navy-900">Terms & Conditions</h1>
-        <p className="text-sm text-navy-600/70">
+        <h1 className="text-2xl sm:text-3xl font-black text-[#0c2317] tracking-tight">Terms & Conditions</h1>
+        <p className="mt-1 text-xs sm:text-sm font-medium text-[#526b5c]">
           Edit the Page 2 terms shown on the invoice PDF. Only terms for selected services are combined per invoice.
         </p>
       </div>
@@ -34,3 +34,4 @@ export default async function TermsPage() {
     </div>
   );
 }
+

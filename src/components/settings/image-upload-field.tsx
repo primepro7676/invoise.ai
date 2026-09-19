@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import Image from "next/image";
-import { Upload, Loader2 } from "lucide-react";
+import { Upload, Loader2, ImageIcon } from "lucide-react";
 import { Label } from "@/components/ui/input";
 
 export function ImageUploadField({
@@ -40,13 +40,16 @@ export function ImageUploadField({
 
   return (
     <div>
-      <Label>{label}</Label>
+      <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c] mb-1.5 block">{label}</Label>
       <div className="flex items-center gap-3">
-        <div className="flex h-16 w-28 items-center justify-center overflow-hidden rounded-lg border border-brand-200 bg-white">
+        <div className="flex h-16 w-28 items-center justify-center overflow-hidden rounded-xl border border-[#e1ece3] bg-[#f4f7f4] p-1 shadow-inner">
           {preview ? (
             <Image src={preview} alt={label} width={112} height={64} className="h-full w-full object-contain" unoptimized />
           ) : (
-            <span className="text-[10px] text-navy-400">No image</span>
+            <div className="flex flex-col items-center justify-center text-[#8aa393]">
+              <ImageIcon className="h-5 w-5 mb-0.5 opacity-50" />
+              <span className="text-[10px] font-semibold">No image</span>
+            </div>
           )}
         </div>
         <div>
@@ -54,12 +57,12 @@ export function ImageUploadField({
             type="button"
             onClick={() => inputRef.current?.click()}
             disabled={uploading}
-            className="btn-secondary"
+            className="btn-secondary text-xs font-bold py-2 px-3 gap-1.5"
           >
             {uploading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5" />}
-            {uploading ? "Uploading..." : "Upload"}
+            {uploading ? "Uploading..." : "Upload New"}
           </button>
-          {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
+          {error && <p className="mt-1 text-xs font-semibold text-rose-600">{error}</p>}
         </div>
         <input
           ref={inputRef}
@@ -75,3 +78,4 @@ export function ImageUploadField({
     </div>
   );
 }
+

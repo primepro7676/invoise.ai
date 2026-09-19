@@ -58,28 +58,28 @@ export default async function EditInvoicePage({
 
   return (
     <div className="space-y-6 pb-12">
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#edf2ee] pb-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="rounded-lg border border-amber-500/30 bg-amber-500/15 px-2 py-0.5 text-xs font-bold text-amber-300">
+            <span className="rounded-lg border border-[#d2ded5] bg-[#eaf2ec] px-2.5 py-0.5 text-xs font-bold text-[#0c2e1b]">
               {invoice.invoiceNumber}
             </span>
-            <h1 className="text-2xl font-extrabold text-white tracking-tight">Edit Invoice</h1>
+            <h1 className="text-2xl font-black text-[#0c2317] tracking-tight">Edit Invoice</h1>
           </div>
-          <p className="mt-1 text-xs text-slate-400">
-            Customer: <strong className="text-white">{invoice.customer.companyName}</strong> · Update items, rates, discounts, or terms.
+          <p className="mt-1 text-xs font-medium text-[#526b5c]">
+            Customer: <strong className="text-[#0c2317]">{invoice.customer.companyName}</strong> · Update items, rates, discounts, or terms.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           <Link href={`/dashboard/invoices/${id}`}>
-            <Button variant="secondary" size="sm" className="gap-1.5">
-              <Eye className="h-3.5 w-3.5 text-amber-400" />
+            <Button variant="secondary" size="sm" className="gap-1.5 font-bold">
+              <Eye className="h-3.5 w-3.5 text-[#0c2e1b]" />
               <span>View Details</span>
             </Button>
           </Link>
           <Link href="/dashboard/invoices">
-            <Button variant="secondary" size="sm" className="gap-1.5">
+            <Button variant="secondary" size="sm" className="gap-1.5 font-bold">
               <ArrowLeft className="h-3.5 w-3.5" />
               <span>All Invoices</span>
             </Button>

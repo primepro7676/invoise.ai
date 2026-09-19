@@ -3,7 +3,8 @@
 import { useState, type FormEvent } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { Lock, Mail, Loader2, ArrowRight, Sparkles } from "lucide-react";
+import { Lock, Mail, Loader2, ArrowRight, Sparkles, ShieldCheck } from "lucide-react";
+import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -42,99 +43,94 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#080b11] p-4 sm:p-6">
-      {/* Ambient background glow orbs */}
-      <div className="pointer-events-none absolute -left-20 -top-20 h-96 w-96 rounded-full bg-amber-500/10 blur-[120px]" />
-      <div className="pointer-events-none absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-blue-500/10 blur-[140px]" />
-      <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[32rem] w-[32rem] rounded-full bg-emerald-500/5 blur-[160px]" />
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#f4f7f4] p-4 sm:p-6">
+      <div className="pointer-events-none absolute -left-20 -top-20 h-96 w-96 rounded-full bg-[#0c2e1b]/10 blur-[120px]" />
+      <div className="pointer-events-none absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-[#e5ba55]/15 blur-[140px]" />
 
       <div className="relative z-10 w-full max-w-md">
-        {/* Logo / Header */}
         <div className="mb-7 text-center">
-          <div className="mx-auto mb-3.5 flex h-14 w-14 items-center justify-center rounded-2xl border border-amber-500/30 bg-gradient-to-br from-amber-500/20 via-[#121726] to-black text-2xl font-black text-amber-400 shadow-xl shadow-amber-500/15 backdrop-blur-xl">
+          <div className="mx-auto mb-3.5 flex h-14 w-14 items-center justify-center rounded-2xl border border-[#e5ba55]/40 bg-[#0c2e1b] text-2xl font-black text-[#f0c34e] shadow-xl shadow-[#0c2e1b]/20">
             PP
           </div>
 
-          <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-0.5 text-xs font-semibold text-amber-300 backdrop-blur-md mb-2">
-            <Sparkles className="h-3 w-3 text-amber-400" />
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-[#0c2e1b]/20 bg-[#0c2e1b]/10 px-3.5 py-1 text-xs font-bold text-[#0c2e1b] mb-2">
+            <Sparkles className="h-3.5 w-3.5 text-[#e5ba55]" />
             <span>PrimePro × Fuelo</span>
           </div>
 
-          <h1 className="text-2xl font-extrabold tracking-tight text-white">
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[#0c2317]">
             Tax Invoice & Billing Portal
           </h1>
-          <p className="mt-1 text-xs text-slate-400">
+          <p className="mt-1.5 text-xs sm:text-sm font-medium text-[#526b5c]">
             Sign in to access real-time financial intelligence and billing management.
           </p>
         </div>
 
-        {/* Frosted Glass Login Card */}
-        <div className="rounded-3xl border border-white/10 bg-[#0f1422]/75 p-6 sm:p-8 shadow-[0_16px_48px_rgba(0,0,0,0.6)] backdrop-blur-2xl">
-          <div className="mb-5">
-            <h2 className="text-lg font-bold text-white">Welcome Back</h2>
-            <p className="text-xs text-slate-400">
-              Enter your admin credentials to continue.
-            </p>
+        <div className="rounded-3xl border border-[#e1ece3] bg-white p-6 sm:p-8 shadow-[0_12px_40px_rgba(12,46,27,0.08)]">
+          <div className="mb-5 flex items-center justify-between border-b border-[#e1ece3] pb-4">
+            <div>
+              <h2 className="text-lg font-black text-[#0c2317]">Welcome Back</h2>
+              <p className="text-xs font-medium text-[#526b5c] mt-0.5">
+                Enter your admin credentials to continue.
+              </p>
+            </div>
+            <div className="h-9 w-9 rounded-xl bg-[#f4f7f4] border border-[#e1ece3] flex items-center justify-center text-[#0c2e1b]">
+              <ShieldCheck className="h-5 w-5" />
+            </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Error banner */}
             {error && (
-              <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-xs font-semibold text-red-300 backdrop-blur-md">
+              <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs font-bold text-rose-800">
                 {error}
               </div>
             )}
 
-            {/* Email / Username */}
             <div>
-              <label htmlFor="email" className="block text-xs font-semibold text-slate-300">
+              <label htmlFor="email" className="block text-xs font-bold uppercase tracking-wider text-[#526b5c]">
                 Email Address
               </label>
 
               <div className="relative mt-1.5">
-                <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
-
+                <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8aa393]" />
                 <input
                   id="email"
                   type="email"
                   required
                   autoComplete="email"
-                  className="w-full rounded-xl border border-white/15 bg-black/40 pl-10 pr-3.5 py-2.5 text-sm text-white placeholder-slate-500 outline-none transition focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20"
+                  className="w-full rounded-xl border border-[#cdddd2] bg-white pl-10 pr-3.5 py-2.5 text-sm font-semibold text-[#0c2317] placeholder-[#8aa393] outline-none transition focus:border-[#0c2e1b] focus:ring-2 focus:ring-[#0c2e1b]/20"
+                  placeholder="admin@primepro.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
             </div>
 
-            {/* Password */}
             <div>
-              <div className="flex items-center justify-between">
-                <label htmlFor="password" className="block text-xs font-semibold text-slate-300">
-                  Password
-                </label>
-              </div>
+              <label htmlFor="password" className="block text-xs font-bold uppercase tracking-wider text-[#526b5c]">
+                Password
+              </label>
 
               <div className="relative mt-1.5">
-                <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
-
+                <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8aa393]" />
                 <input
                   id="password"
                   type="password"
                   required
                   autoComplete="current-password"
-                  className="w-full rounded-xl border border-white/15 bg-black/40 pl-10 pr-3.5 py-2.5 text-sm text-white placeholder-slate-500 outline-none transition focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20"
+                  className="w-full rounded-xl border border-[#cdddd2] bg-white pl-10 pr-3.5 py-2.5 text-sm font-semibold text-[#0c2317] placeholder-[#8aa393] outline-none transition focus:border-[#0c2e1b] focus:ring-2 focus:ring-[#0c2e1b]/20"
+                  placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
             </div>
 
-            {/* Sign In Button */}
             <div className="pt-2">
               <button
                 type="submit"
                 disabled={loading}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 px-4 py-3 text-sm font-bold text-black shadow-lg shadow-amber-500/25 transition hover:from-amber-400 hover:to-amber-500 hover:shadow-amber-500/40 disabled:cursor-not-allowed disabled:opacity-60"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#0c2e1b] px-4 py-3 text-sm font-black text-[#f0c34e] shadow-lg shadow-[#0c2e1b]/20 transition hover:bg-[#133b24] hover:shadow-[#0c2e1b]/30 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {loading ? (
                   <>
@@ -149,10 +145,19 @@ export default function LoginPage() {
               </button>
             </div>
           </form>
+
+          <div className="mt-5 border-t border-[#e1ece3] pt-4 text-center text-xs font-semibold text-[#526b5c]">
+            Need to create an account?{" "}
+            <Link
+              href="/signup"
+              className="font-bold text-[#0c2e1b] hover:text-[#e5ba55] hover:underline transition"
+            >
+              Sign Up
+            </Link>
+          </div>
         </div>
 
-        {/* Footer */}
-        <p className="mt-6 text-center text-[11px] text-slate-500">
+        <p className="mt-6 text-center text-xs font-medium text-[#526b5c]">
           © 2026 PrimePro Technologies AI LLC & Fuelo Technologies OPC Pvt Ltd.
         </p>
       </div>

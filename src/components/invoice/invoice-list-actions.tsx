@@ -45,7 +45,7 @@ export function InvoiceListActions({
     <div className="flex items-center justify-end gap-1.5">
       <Link
         href={`/dashboard/invoices/${invoiceId}`}
-        className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-slate-300 hover:border-amber-500/40 hover:text-amber-300 hover:bg-white/10 transition"
+        className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-[#d2ded5] bg-white text-[#1c3d2b] hover:border-[#0c2e1b]/40 hover:text-[#0c2e1b] hover:bg-[#eaf2ec] transition shadow-2xs"
         title="View Details"
       >
         <Eye className="h-3.5 w-3.5" />
@@ -53,7 +53,7 @@ export function InvoiceListActions({
 
       <Link
         href={`/dashboard/invoices/${invoiceId}/edit`}
-        className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-slate-300 hover:border-blue-500/40 hover:text-blue-300 hover:bg-white/10 transition"
+        className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-[#d2ded5] bg-white text-[#1c3d2b] hover:border-blue-500/40 hover:text-blue-700 hover:bg-blue-50 transition shadow-2xs"
         title="Edit Invoice"
       >
         <Pencil className="h-3.5 w-3.5" />
@@ -62,16 +62,16 @@ export function InvoiceListActions({
       <button
         type="button"
         onClick={wa}
-        className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-slate-300 hover:border-emerald-500/40 hover:text-emerald-400 hover:bg-white/10 transition"
+        className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-[#d2ded5] bg-white text-[#1c3d2b] hover:border-emerald-500/40 hover:text-emerald-700 hover:bg-emerald-50 transition shadow-2xs"
         title="Share on WhatsApp"
       >
-        <MessageCircle className="h-3.5 w-3.5 text-emerald-400" />
+        <MessageCircle className="h-3.5 w-3.5 text-emerald-600" />
       </button>
 
       <a
         href={`/api/invoices/${invoiceId}/pdf`}
         download={`${invoiceNumber}.pdf`}
-        className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-slate-300 hover:border-amber-500/40 hover:text-amber-300 hover:bg-white/10 transition"
+        className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-[#d2ded5] bg-white text-[#1c3d2b] hover:border-[#0c2e1b]/40 hover:text-[#0c2e1b] hover:bg-[#eaf2ec] transition shadow-2xs"
         title="Download PDF"
       >
         <Download className="h-3.5 w-3.5" />
@@ -80,10 +80,10 @@ export function InvoiceListActions({
       <button
         type="button"
         onClick={del}
-        className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-slate-300 hover:border-red-500/40 hover:text-red-400 hover:bg-white/10 transition"
+        className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-[#d2ded5] bg-white text-[#1c3d2b] hover:border-red-300 hover:text-red-700 hover:bg-red-50 transition shadow-2xs"
         title="Delete"
       >
-        <Trash2 className="h-3.5 w-3.5 text-red-400" />
+        <Trash2 className="h-3.5 w-3.5 text-red-600" />
       </button>
     </div>
   );

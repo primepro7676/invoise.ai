@@ -11,6 +11,7 @@ const STATUS_OPTIONS = ["UNPAID", "PARTIALLY_PAID", "PAID", "OVERDUE"];
 export function InvoiceActions({
   invoiceId,
   currentStatus,
+  currentDueDate = "",
   amountPaid = 0,
   grandTotal = 0,
   customerName = "Customer",
@@ -19,6 +20,7 @@ export function InvoiceActions({
 }: {
   invoiceId: string;
   currentStatus: string;
+  currentDueDate?: string;
   amountPaid?: number;
   grandTotal?: number;
   customerName?: string;
@@ -28,9 +30,10 @@ export function InvoiceActions({
   const router = useRouter();
   const [status, setStatus] = useState(currentStatus);
   const [paid, setPaid] = useState(String(amountPaid));
+  const [dueDate, setDueDate] = useState(currentDueDate);
   const [updating, setUpdating] = useState(false);
 
-  async function updatePayment(nextStatus = status, nextPaid = paid) {
+  async function updatePayment(nextStatus = status, nextPaid = paid, nextDueDate = dueDate) {
     setUpdating(true);
     const res = await fetch(`/api/invoices/${invoiceId}`, {
       method: "PATCH",
@@ -38,11 +41,13 @@ export function InvoiceActions({
       body: JSON.stringify({
         paymentStatus: nextStatus,
         amountPaid: Number(nextPaid) || 0,
+        dueDate: nextDueDate || undefined,
       }),
     });
     if (res.ok) {
       setStatus(nextStatus);
       setPaid(nextPaid);
+      setDueDate(nextDueDate);
       router.refresh();
     }
     setUpdating(false);
@@ -84,7 +89,7 @@ export function InvoiceActions({
           value={status}
           onChange={(e) => {
             setStatus(e.target.value);
-            updatePayment(e.target.value, paid);
+            updatePayment(e.target.value, paid, dueDate);
           }}
           disabled={updating}
           className="w-36 h-9 text-xs"
@@ -98,11 +103,25 @@ export function InvoiceActions({
       </div>
 
       <div>
+        <Label className="text-[10px]">Due Date</Label>
+        <Input
+          type="date"
+          value={dueDate}
+          onChange={(e) => {
+            setDueDate(e.target.value);
+            updatePayment(status, paid, e.target.value);
+          }}
+          disabled={updating}
+          className="w-36 h-9 text-xs"
+        />
+      </div>
+
+      <div>
         <Label className="text-[10px]">Amount Paid</Label>
         <Input
           value={paid}
           onChange={(e) => setPaid(e.target.value)}
-          onBlur={() => updatePayment(status, paid)}
+          onBlur={() => updatePayment(status, paid, dueDate)}
           type="number"
           min="0"
           step="0.01"
@@ -110,15 +129,15 @@ export function InvoiceActions({
         />
       </div>
 
-      <div className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs backdrop-blur-md">
-        <span className="text-[10px] text-slate-400 font-medium">Balance</span>
+      <div className="rounded-xl border border-[#d2ded5] bg-[#eaf2ec] px-3 py-1.5 text-xs">
+        <span className="text-[10px] text-[#526b5c] font-medium">Balance</span>
         <br />
-        <b className="text-amber-400 font-bold">
+        <b className="text-[#0c2e1b] font-bold">
           ₹{balance.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
         </b>
       </div>
 
-      {updating && <Loader2 className="h-4 w-4 animate-spin text-amber-400" />}
+      {updating && <Loader2 className="h-4 w-4 animate-spin text-[#0c2e1b]" />}
 
       <a href={`/dashboard/invoices/${invoiceId}/edit`}>
         <Button variant="secondary" size="sm">
@@ -127,7 +146,7 @@ export function InvoiceActions({
       </a>
 
       <Button variant="secondary" size="sm" onClick={shareWhatsApp} title="Share on WhatsApp">
-        <MessageCircle className="h-3.5 w-3.5 text-emerald-400" /> WhatsApp
+        <MessageCircle className="h-3.5 w-3.5 text-emerald-600" /> WhatsApp
       </Button>
 
       <a href={`/api/invoices/${invoiceId}/pdf`} target="_blank" rel="noreferrer">

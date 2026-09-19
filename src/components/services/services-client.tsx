@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Plus, Pencil, Trash2, Loader2, Layers } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, Layers, ArrowRight } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
@@ -27,13 +27,14 @@ export function ServicesClient({ initialCategories }: { initialCategories: Categ
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="flex justify-end">
         <Button
           onClick={() => {
             setEditing(null);
             setShowForm(true);
           }}
+          className="gap-2 font-bold shadow-sm"
         >
           <Plus className="h-4 w-4" /> Add Service Category
         </Button>
@@ -50,40 +51,49 @@ export function ServicesClient({ initialCategories }: { initialCategories: Categ
         />
       )}
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {initialCategories.map((cat) => (
-          <Card key={cat.id}>
-            <div className="mb-3 flex items-start justify-between">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400">
-                <Layers className="h-4 w-4" />
+          <Card key={cat.id} className="bg-white border border-[#e1ece3] shadow-sm rounded-2xl p-5 flex flex-col justify-between hover:border-[#133b24]/30 transition-all">
+            <div>
+              <div className="mb-3.5 flex items-start justify-between">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0c2e1b]/10 border border-[#0c2e1b]/20 text-[#0c2e1b]">
+                  <Layers className="h-5 w-5" />
+                </div>
+                <div className="flex gap-1">
+                  <button
+                    onClick={() => {
+                      setEditing(cat);
+                      setShowForm(true);
+                    }}
+                    className="rounded-lg p-1.5 text-[#526b5c] hover:bg-[#f4f7f4] hover:text-[#0c2317] transition"
+                    title="Edit category"
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(cat.id)}
+                    className="rounded-lg p-1.5 text-rose-500 hover:bg-rose-50 transition"
+                    title="Delete category"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
               </div>
-              <div className="flex gap-1">
-                <button
-                  onClick={() => {
-                    setEditing(cat);
-                    setShowForm(true);
-                  }}
-                  className="rounded-lg p-1.5 text-slate-400 hover:bg-white/10 hover:text-white transition"
-                >
-                  <Pencil className="h-3.5 w-3.5" />
-                </button>
-                <button
-                  onClick={() => handleDelete(cat.id)}
-                  className="rounded-lg p-1.5 text-red-400 hover:bg-red-500/15 transition"
-                >
-                  <Trash2 className="h-3.5 w-3.5" />
-                </button>
-              </div>
+              <h3 className="text-base font-black text-[#0c2317]">{cat.name}</h3>
+              {cat.description && <p className="mt-1.5 text-xs text-[#526b5c] leading-relaxed">{cat.description}</p>}
             </div>
-            <h3 className="text-base font-bold text-white">{cat.name}</h3>
-            {cat.description && <p className="mt-1 text-xs text-slate-400">{cat.description}</p>}
-            <p className="mt-3 text-xs text-amber-300 font-semibold">{cat.packageCount} package(s)</p>
-            <Link
-              href="/dashboard/packages"
-              className="mt-2 inline-block text-xs font-semibold text-amber-400 hover:text-amber-300 hover:underline"
-            >
-              Manage packages →
-            </Link>
+
+            <div className="mt-5 pt-3.5 border-t border-[#e1ece3] flex items-center justify-between">
+              <span className="text-xs font-bold text-[#0c2e1b] bg-[#f4f7f4] px-2.5 py-1 rounded-full border border-[#e1ece3]">
+                {cat.packageCount} package(s)
+              </span>
+              <Link
+                href="/dashboard/packages"
+                className="inline-flex items-center gap-1 text-xs font-bold text-[#0c2e1b] hover:text-[#e5ba55] transition-colors"
+              >
+                Manage packages <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
           </Card>
         ))}
       </div>
@@ -119,29 +129,30 @@ function CategoryForm({
   }
 
   return (
-    <Card>
-      <h2 className="mb-4 text-base font-bold text-white">
+    <Card className="bg-white border border-[#e1ece3] shadow-md rounded-2xl p-6">
+      <h2 className="mb-4 text-base font-black text-[#0c2317]">
         {initial ? "Edit Service Category" : "Add Service Category"}
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <Label>Category Name</Label>
-          <Input value={name} onChange={(e) => setName(e.target.value)} required />
+          <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">Category Name</Label>
+          <Input value={name} onChange={(e) => setName(e.target.value)} required className="mt-1.5" />
         </div>
         <div>
-          <Label>Description</Label>
-          <Textarea value={description} onChange={(e) => setDescription(e.target.value)} />
+          <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">Description</Label>
+          <Textarea value={description} onChange={(e) => setDescription(e.target.value)} className="mt-1.5" />
         </div>
-        <div className="flex justify-end gap-3">
+        <div className="flex justify-end gap-3 pt-2">
           <Button type="button" variant="secondary" onClick={onClose}>
             Cancel
           </Button>
           <Button type="submit" disabled={submitting}>
             {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
-            Save
+            Save Category
           </Button>
         </div>
       </form>
     </Card>
   );
 }
+

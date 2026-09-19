@@ -16,7 +16,6 @@ import {
   ChevronUp,
   Percent,
   IndianRupee,
-  PackageCheck,
 } from "lucide-react";
 import { invoiceSchema, type InvoiceFormValues } from "@/lib/validation";
 import type { CategoryDTO, CustomerDTO, PackageBundleDTO } from "@/lib/types";
@@ -217,7 +216,6 @@ export function InvoiceForm({
     const bundle = bundles.find((b) => b.id === bundleId);
     if (!bundle) return;
 
-    // 1. Populate Line Items
     if (bundle.items && bundle.items.length > 0) {
       const formattedItems = bundle.items.map((item) => ({
         categoryName: item.categoryName || categories[0]?.name || "Service",
@@ -233,7 +231,6 @@ export function InvoiceForm({
       replace(formattedItems);
     }
 
-    // 2. Populate Package Metadata & Deliverables
     setValue("packageTitle", bundle.name || "");
     setValue("packageSubtitle", bundle.subtitle || "");
     setValue("overallDiscount", bundle.discountPrice || 0);
@@ -244,7 +241,6 @@ export function InvoiceForm({
     setValue("paymentTermsText", bundle.paymentTerms || "");
     setValue("specialOfferNote", bundle.specialNote || "");
 
-    // 3. Open Package Scope card
     setShowPackageScope(true);
   }
 
@@ -307,22 +303,23 @@ export function InvoiceForm({
   return (
     <form onSubmit={handleSubmit(onSubmit, onInvalid)} className="space-y-6">
       {submitError && (
-        <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{submitError}</div>
+        <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700 shadow-xs">
+          {submitError}
+        </div>
       )}
 
-      {/* Quick Load Predefined Package Bundle Preset */}
       {bundles.length > 0 && (
-        <Card className="border-amber-500/30 bg-gradient-to-r from-amber-500/10 via-[#0f1422]/90 to-[#0c0f18]/95 p-4 shadow-sm">
+        <Card className="border border-[#c5dccb] bg-[#eaf2ec] p-4 shadow-sm">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/20 text-amber-300 shadow-xs border border-amber-500/30">
-                <Sparkles className="h-5 w-5 text-amber-400" />
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0c2e1b] text-[#f0c34e] shadow-xs">
+                <Sparkles className="h-5 w-5 text-[#f0c34e]" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-white">
+                <h3 className="text-sm font-bold text-[#0c2317]">
                   Select Predefined Package Offer (Quick Fill)
                 </h3>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-[#526b5c]">
                   Choose a saved master package to automatically fill services, standard rates, discounts & deliverables.
                 </p>
               </div>
@@ -332,7 +329,7 @@ export function InvoiceForm({
               <Select
                 value={selectedBundleId}
                 onChange={(e) => handleLoadBundle(e.target.value)}
-                className="bg-black/50 font-medium border-white/15 text-white"
+                className="bg-white font-medium border-[#cdddd2] text-[#0c2317]"
               >
                 <option value="">— Choose a Preset Package Bundle —</option>
                 {bundles.map((b) => (
@@ -346,28 +343,81 @@ export function InvoiceForm({
         </Card>
       )}
 
-      {/* Invoice Details */}
-      <Card>
-        <h2 className="mb-4 text-base font-semibold text-navy-900">Invoice Details</h2>
+      <Card className="bg-white border border-[#e1ece3] shadow-sm rounded-2xl p-6">
+        <h2 className="mb-4 text-base font-bold text-[#0c2317]">Invoice Details</h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <Label>Invoice Number</Label>
-            <Input {...register("invoiceNumber")} />
+            <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">Invoice Number</Label>
+            <Input {...register("invoiceNumber")} className="mt-1.5" />
             {errors.invoiceNumber && (
-              <p className="mt-1 text-xs text-red-600">{errors.invoiceNumber.message}</p>
+              <p className="mt-1 text-xs text-rose-600 font-medium">{errors.invoiceNumber.message}</p>
             )}
           </div>
           <div>
-            <Label>Invoice Date</Label>
-            <Input type="date" {...register("invoiceDate")} />
+            <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">Invoice Date</Label>
+            <Input type="date" {...register("invoiceDate")} className="mt-1.5" />
           </div>
           <div>
-            <Label>Due Date</Label>
-            <Input type="date" {...register("dueDate")} />
+            <div className="flex items-center justify-between mb-1">
+              <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c] mb-0">Due Date</Label>
+              <div className="flex gap-1 text-[10px]">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const base = watch("invoiceDate") ? new Date(watch("invoiceDate")) : new Date();
+                    setValue("dueDate", base.toISOString().slice(0, 10), { shouldValidate: true, shouldDirty: true });
+                  }}
+                  className="px-1.5 py-0.5 rounded border border-[#d2ded5] bg-[#f0f5f1] hover:bg-[#0c2e1b] text-[#1c3d2b] hover:text-[#f0c34e] font-semibold transition"
+                  title="Due Today"
+                >
+                  Today
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const base = watch("invoiceDate") ? new Date(watch("invoiceDate")) : new Date();
+                    const next = new Date(base.getTime() + 7 * 86400000);
+                    setValue("dueDate", next.toISOString().slice(0, 10), { shouldValidate: true, shouldDirty: true });
+                  }}
+                  className="px-1.5 py-0.5 rounded border border-[#d2ded5] bg-[#f0f5f1] hover:bg-[#0c2e1b] text-[#1c3d2b] hover:text-[#f0c34e] font-semibold transition"
+                  title="+7 Days"
+                >
+                  +7d
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const base = watch("invoiceDate") ? new Date(watch("invoiceDate")) : new Date();
+                    const next = new Date(base.getTime() + 15 * 86400000);
+                    setValue("dueDate", next.toISOString().slice(0, 10), { shouldValidate: true, shouldDirty: true });
+                  }}
+                  className="px-1.5 py-0.5 rounded border border-[#d2ded5] bg-[#f0f5f1] hover:bg-[#0c2e1b] text-[#1c3d2b] hover:text-[#f0c34e] font-semibold transition"
+                  title="+15 Days"
+                >
+                  +15d
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const base = watch("invoiceDate") ? new Date(watch("invoiceDate")) : new Date();
+                    const next = new Date(base.getTime() + 30 * 86400000);
+                    setValue("dueDate", next.toISOString().slice(0, 10), { shouldValidate: true, shouldDirty: true });
+                  }}
+                  className="px-1.5 py-0.5 rounded border border-[#d2ded5] bg-[#f0f5f1] hover:bg-[#0c2e1b] text-[#1c3d2b] hover:text-[#f0c34e] font-semibold transition"
+                  title="+30 Days"
+                >
+                  +30d
+                </button>
+              </div>
+            </div>
+            <Input type="date" {...register("dueDate")} className="mt-1.5" />
+            {errors.dueDate && (
+              <p className="mt-1 text-xs text-rose-600 font-medium">{errors.dueDate.message}</p>
+            )}
           </div>
           <div>
-            <Label>Payment Status</Label>
-            <Select {...register("paymentStatus")}>
+            <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">Payment Status</Label>
+            <Select {...register("paymentStatus")} className="mt-1.5">
               <option value="UNPAID">Unpaid</option>
               <option value="PARTIALLY_PAID">Partially Paid</option>
               <option value="PAID">Paid</option>
@@ -377,10 +427,9 @@ export function InvoiceForm({
         </div>
       </Card>
 
-      {/* Customer */}
-      <Card>
+      <Card className="bg-white border border-[#e1ece3] shadow-sm rounded-2xl p-6">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-base font-semibold text-navy-900">Bill To</h2>
+          <h2 className="text-base font-bold text-[#0c2317]">Bill To</h2>
           <div className="flex gap-2">
             <Button
               type="button"
@@ -403,8 +452,8 @@ export function InvoiceForm({
 
         {customerMode === "existing" ? (
           <div>
-            <Label>Select Customer</Label>
-            <Select {...register("customerId")}>
+            <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">Select Customer</Label>
+            <Select {...register("customerId")} className="mt-1.5">
               <option value="">— Select a customer —</option>
               {customers.map((c) => (
                 <option key={c.id} value={c.id}>
@@ -413,65 +462,64 @@ export function InvoiceForm({
               ))}
             </Select>
             {errors.customerId && (
-              <p className="mt-1 text-xs text-red-600">{errors.customerId.message}</p>
+              <p className="mt-1 text-xs text-rose-600 font-medium">{errors.customerId.message}</p>
             )}
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <Label>Customer / Company Name *</Label>
-              <Input {...register("newCustomer.companyName")} />
+              <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">Customer / Company Name *</Label>
+              <Input {...register("newCustomer.companyName")} className="mt-1.5" />
             </div>
             <div>
-              <Label>Contact Person</Label>
-              <Input {...register("newCustomer.contactPerson")} />
+              <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">Contact Person</Label>
+              <Input {...register("newCustomer.contactPerson")} className="mt-1.5" />
             </div>
             <div className="sm:col-span-2">
-              <Label>Billing Address *</Label>
-              <Input {...register("newCustomer.billingAddress")} />
+              <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">Billing Address *</Label>
+              <Input {...register("newCustomer.billingAddress")} className="mt-1.5" />
             </div>
             <div>
-              <Label>City *</Label>
-              <Input {...register("newCustomer.city")} />
+              <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">City *</Label>
+              <Input {...register("newCustomer.city")} className="mt-1.5" />
             </div>
             <div>
-              <Label>State *</Label>
-              <Input {...register("newCustomer.state")} />
+              <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">State *</Label>
+              <Input {...register("newCustomer.state")} className="mt-1.5" />
             </div>
             <div>
-              <Label>Pincode *</Label>
-              <Input {...register("newCustomer.pincode")} />
+              <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">Pincode *</Label>
+              <Input {...register("newCustomer.pincode")} className="mt-1.5" />
             </div>
             <div>
-              <Label>Country</Label>
-              <Input {...register("newCustomer.country")} />
+              <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">Country</Label>
+              <Input {...register("newCustomer.country")} className="mt-1.5" />
             </div>
             <div>
-              <Label>Phone *</Label>
-              <Input {...register("newCustomer.phone")} />
+              <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">Phone *</Label>
+              <Input {...register("newCustomer.phone")} className="mt-1.5" />
             </div>
             <div>
-              <Label>Email</Label>
-              <Input type="email" {...register("newCustomer.email")} />
+              <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">Email</Label>
+              <Input type="email" {...register("newCustomer.email")} className="mt-1.5" />
             </div>
             <div>
-              <Label>GSTIN</Label>
-              <Input {...register("newCustomer.gstin")} />
+              <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">GSTIN</Label>
+              <Input {...register("newCustomer.gstin")} className="mt-1.5" />
             </div>
             <div>
-              <Label>Place of Supply *</Label>
-              <Input {...register("newCustomer.placeOfSupply")} />
+              <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">Place of Supply *</Label>
+              <Input {...register("newCustomer.placeOfSupply")} className="mt-1.5" />
             </div>
           </div>
         )}
       </Card>
 
-      {/* Services / Line Items */}
-      <Card>
+      <Card className="bg-white border border-[#e1ece3] shadow-sm rounded-2xl p-6">
         <div className="mb-4 flex items-center justify-between">
           <div>
-            <h2 className="text-base font-bold text-white">Services & Standard Pricing</h2>
-            <p className="text-xs text-slate-400">
+            <h2 className="text-base font-bold text-[#0c2317]">Services & Standard Pricing</h2>
+            <p className="text-xs text-[#526b5c]">
               Add or customize services included in this invoice.
             </p>
           </div>
@@ -487,16 +535,16 @@ export function InvoiceForm({
             const itemDiscountType = watch(`lineItems.${index}.discountType`) || "FLAT";
 
             return (
-              <div key={field.id} className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+              <div key={field.id} className="rounded-xl border border-[#e1ece3] bg-[#f9fbf9] p-4">
                 <div className="mb-3 flex items-center justify-between">
-                  <span className="text-xs font-bold uppercase tracking-wider text-amber-400">
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#0c2e1b]">
                     Service {index + 1}
                   </span>
                   {fields.length > 1 && (
                     <button
                       type="button"
                       onClick={() => remove(index)}
-                      className="rounded-lg p-1.5 text-red-400 hover:bg-red-500/10 transition"
+                      className="rounded-lg p-1.5 text-rose-500 hover:bg-rose-50 transition"
                       aria-label="Delete service"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -505,13 +553,14 @@ export function InvoiceForm({
                 </div>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-12">
                   <div className="lg:col-span-4">
-                    <Label>Service Category</Label>
+                    <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">Service Category</Label>
                     <Controller
                       control={control}
                       name={`lineItems.${index}.categoryName`}
                       render={({ field: f }) => (
                         <Select
                           {...f}
+                          className="mt-1"
                           onChange={(e) => {
                             f.onChange(e.target.value);
                             setValue(`lineItems.${index}.packageName`, "");
@@ -532,7 +581,7 @@ export function InvoiceForm({
                     />
                   </div>
                   <div className="lg:col-span-4">
-                    <Label>Package / Item (Optional)</Label>
+                    <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">Package / Item (Optional)</Label>
                     <Controller
                       control={control}
                       name={`lineItems.${index}.packageName`}
@@ -542,6 +591,7 @@ export function InvoiceForm({
                         return hasPredefined ? (
                           <Select
                             {...f}
+                            className="mt-1"
                             onChange={(e) => {
                               f.onChange(e.target.value);
                               if (e.target.value) {
@@ -562,6 +612,7 @@ export function InvoiceForm({
                         ) : (
                           <Input
                             value={f.value}
+                            className="mt-1"
                             onChange={(e) => f.onChange(e.target.value)}
                             placeholder="Service / item name (Optional)"
                           />
@@ -570,43 +621,45 @@ export function InvoiceForm({
                     />
                   </div>
                   <div className="lg:col-span-2">
-                    <Label>Qty</Label>
+                    <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">Qty</Label>
                     <Input
                       type="number"
                       step="1"
                       min="0"
+                      className="mt-1"
                       {...register(`lineItems.${index}.quantity`)}
                     />
                   </div>
                   <div className="lg:col-span-2">
-                    <Label>{isCustom ? "Price (₹)" : "Standard Price (₹)"}</Label>
+                    <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">{isCustom ? "Price (₹)" : "Standard Price (₹)"}</Label>
                     <Input
                       type="number"
                       step="0.01"
                       min="0"
+                      className="mt-1"
                       {...register(`lineItems.${index}.rate`)}
                     />
                   </div>
                   <div className="sm:col-span-2 lg:col-span-6">
-                    <Label>Line Description (Optional)</Label>
+                    <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">Line Description (Optional)</Label>
                     <Input
+                      className="mt-1"
                       {...register(`lineItems.${index}.description`)}
                       placeholder="Optional details for this service"
                     />
                   </div>
 
-                  {/* Line Item Discount with ₹ and % options */}
                   <div className="sm:col-span-2 lg:col-span-4">
                     <div className="flex items-center justify-between">
-                      <Label>Item Discount (Optional)</Label>
+                      <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">Item Discount (Optional)</Label>
                       <div className="flex items-center gap-1 text-xs">
                         <button
                           type="button"
                           onClick={() => setValue(`lineItems.${index}.discountType`, "FLAT")}
-                          className={`rounded-lg px-2 py-0.5 text-xs font-semibold transition ${
+                          className={`rounded-lg px-2 py-0.5 text-xs font-bold transition ${
                             itemDiscountType === "FLAT"
-                              ? "bg-amber-500 text-black shadow-sm font-bold"
-                              : "bg-white/10 text-slate-300 hover:bg-white/15"
+                              ? "bg-[#0c2e1b] text-[#f0c34e] shadow-xs"
+                              : "bg-[#eaf2ec] text-[#1c3d2b] hover:bg-[#d8e8dc]"
                           }`}
                         >
                           ₹ (Rupees)
@@ -614,10 +667,10 @@ export function InvoiceForm({
                         <button
                           type="button"
                           onClick={() => setValue(`lineItems.${index}.discountType`, "PERCENT")}
-                          className={`rounded-lg px-2 py-0.5 text-xs font-semibold transition ${
+                          className={`rounded-lg px-2 py-0.5 text-xs font-bold transition ${
                             itemDiscountType === "PERCENT"
-                              ? "bg-amber-500 text-black shadow-sm font-bold"
-                              : "bg-white/10 text-slate-300 hover:bg-white/15"
+                              ? "bg-[#0c2e1b] text-[#f0c34e] shadow-xs"
+                              : "bg-[#eaf2ec] text-[#1c3d2b] hover:bg-[#d8e8dc]"
                           }`}
                         >
                           % (Percent)
@@ -632,19 +685,20 @@ export function InvoiceForm({
                         placeholder="0"
                         {...register(`lineItems.${index}.discount`)}
                       />
-                      <span className="pointer-events-none absolute right-3 top-2.5 text-xs text-gray-400">
+                      <span className="pointer-events-none absolute right-3 top-2.5 text-xs text-[#526b5c] font-bold">
                         {itemDiscountType === "PERCENT" ? "%" : "₹"}
                       </span>
                     </div>
                   </div>
 
                   <div className="lg:col-span-2">
-                    <Label>GST %</Label>
+                    <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">GST %</Label>
                     <Input
                       type="number"
                       step="0.01"
                       min="0"
                       max="100"
+                      className="mt-1"
                       disabled={!gstEnabled}
                       {...register(`lineItems.${index}.gstPercent`)}
                     />
@@ -654,44 +708,42 @@ export function InvoiceForm({
             );
           })}
           {errors.lineItems && typeof errors.lineItems.message === "string" && (
-            <p className="text-xs text-red-600">{errors.lineItems.message}</p>
+            <p className="text-xs font-medium text-rose-600">{errors.lineItems.message}</p>
           )}
         </div>
       </Card>
 
-      {/* Special Package Offer & Overall Discount */}
-      <Card className="border-amber-500/30 bg-gradient-to-br from-amber-500/10 via-[#0e1320] to-[#080b11]">
-        <div className="mb-4 flex items-center justify-between border-b border-white/10 pb-3">
+      <Card className="bg-white border border-[#e1ece3] shadow-sm rounded-2xl p-6">
+        <div className="mb-4 flex items-center justify-between border-b border-[#edf2ee] pb-3">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/30">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#eaf2ec] text-[#0c2e1b] border border-[#d2ded5]">
               <Tag className="h-4 w-4" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-white">
+              <h2 className="text-base font-bold text-[#0c2317]">
                 Special Package Offer & Overall Discount (Optional)
               </h2>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-[#526b5c]">
                 Apply a special package discount in Rupees (₹) or Percentage (%) on the entire invoice.
               </p>
             </div>
           </div>
-          <span className="rounded-full border border-amber-500/30 bg-amber-500/15 px-2.5 py-0.5 text-xs font-semibold text-amber-300">
+          <span className="rounded-full border border-[#d2ded5] bg-[#eaf2ec] px-2.5 py-0.5 text-xs font-semibold text-[#0c2e1b]">
             Special Pricing
           </span>
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-12">
-          {/* Discount Type selector with Rupees and % buttons */}
           <div className="sm:col-span-4">
-            <Label>Discount Unit</Label>
+            <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">Discount Unit</Label>
             <div className="mt-1 flex gap-2">
               <button
                 type="button"
                 onClick={() => setValue("discountType", "FLAT")}
                 className={`flex flex-1 items-center justify-center gap-1 rounded-xl border py-2.5 text-sm font-semibold transition ${
                   discountType === "FLAT"
-                    ? "border-amber-500 bg-amber-500 text-black shadow-lg shadow-amber-500/20 font-bold"
-                    : "border-white/15 bg-white/5 text-slate-300 hover:bg-white/10"
+                    ? "border-[#0c2e1b] bg-[#0c2e1b] text-[#f0c34e] shadow-md shadow-[#0c2e1b]/20 font-bold"
+                    : "border-[#d2ded5] bg-white text-[#1c3d2b] hover:bg-[#f0f5f1]"
                 }`}
               >
                 <IndianRupee className="h-4 w-4" /> Rupees (₹)
@@ -701,8 +753,8 @@ export function InvoiceForm({
                 onClick={() => setValue("discountType", "PERCENT")}
                 className={`flex flex-1 items-center justify-center gap-1 rounded-xl border py-2.5 text-sm font-semibold transition ${
                   discountType === "PERCENT"
-                    ? "border-amber-500 bg-amber-500 text-black shadow-lg shadow-amber-500/20 font-bold"
-                    : "border-white/15 bg-white/5 text-slate-300 hover:bg-white/10"
+                    ? "border-[#0c2e1b] bg-[#0c2e1b] text-[#f0c34e] shadow-md shadow-[#0c2e1b]/20 font-bold"
+                    : "border-[#d2ded5] bg-white text-[#1c3d2b] hover:bg-[#f0f5f1]"
                 }`}
               >
                 <Percent className="h-4 w-4" /> Percent (%)
@@ -711,7 +763,7 @@ export function InvoiceForm({
           </div>
 
           <div className="sm:col-span-4">
-            <Label>
+            <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">
               {discountType === "PERCENT" ? "Special Discount (%)" : "Special Discount (₹)"}
             </Label>
             <div className="relative mt-1">
@@ -722,14 +774,14 @@ export function InvoiceForm({
                 placeholder={discountType === "PERCENT" ? "e.g. 20" : "e.g. 25000"}
                 {...register("overallDiscount")}
               />
-              <span className="pointer-events-none absolute right-3 top-2.5 text-xs font-semibold text-gray-400">
+              <span className="pointer-events-none absolute right-3 top-2.5 text-xs font-bold text-[#526b5c]">
                 {discountType === "PERCENT" ? "%" : "₹"}
               </span>
             </div>
           </div>
 
           <div className="sm:col-span-4">
-            <Label>Offer Label (Optional)</Label>
+            <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">Offer Label (Optional)</Label>
             <div className="mt-1">
               <Input
                 placeholder="e.g. Special Package Offer / NGO Discount"
@@ -739,45 +791,43 @@ export function InvoiceForm({
           </div>
         </div>
 
-        {/* Live breakdown preview */}
-        <div className="mt-4 rounded-xl border border-white/10 bg-white/[0.03] p-4 text-sm">
+        <div className="mt-4 rounded-xl border border-[#e1ece3] bg-[#f9fbf9] p-4 text-sm">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <div>
-              <span className="text-xs text-slate-400">Total Standard Value:</span>
-              <p className="font-bold text-white text-base">{formatINR(totals.subtotal)}</p>
+              <span className="text-xs text-[#526b5c]">Total Standard Value:</span>
+              <p className="font-bold text-[#0c2317] text-base">{formatINR(totals.subtotal)}</p>
             </div>
             <div>
-              <span className="text-xs font-medium text-emerald-400">Total Discount Applied:</span>
-              <p className="font-bold text-emerald-300 text-base">- {formatINR(totals.discountAmount)}</p>
+              <span className="text-xs font-medium text-[#0c2e1b]">Total Discount Applied:</span>
+              <p className="font-bold text-[#0c2e1b] text-base">- {formatINR(totals.discountAmount)}</p>
             </div>
             <div>
-              <span className="text-xs text-slate-400">Final Package Price (excl. GST):</span>
-              <p className="font-bold text-amber-400 text-base">{formatINR(totals.taxableAmount)}</p>
+              <span className="text-xs text-[#526b5c]">Final Package Price (excl. GST):</span>
+              <p className="font-bold text-[#0c2e1b] text-base">{formatINR(totals.taxableAmount)}</p>
             </div>
           </div>
         </div>
       </Card>
 
-      {/* Package Scope & Deliverables (Optional) */}
-      <Card className="border-white/10">
+      <Card className="bg-white border border-[#e1ece3] shadow-sm rounded-2xl p-6">
         <div
           className="flex cursor-pointer items-center justify-between"
           onClick={() => setShowPackageScope(!showPackageScope)}
         >
-          <div className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-amber-400" />
+          <div className="flex items-center gap-2.5">
+            <Sparkles className="h-5 w-5 text-[#0c2e1b]" />
             <div>
-              <h2 className="text-base font-bold text-white">
+              <h2 className="text-base font-bold text-[#0c2317]">
                 Package Scope, Deliverables & Payment Terms (Optional)
               </h2>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-[#526b5c]">
                 Package branding, platforms, deliverables list, and advance payment terms.
               </p>
             </div>
           </div>
           <button
             type="button"
-            className="flex items-center gap-1 text-sm font-medium text-brand-600 hover:text-brand-700"
+            className="flex items-center gap-1 text-sm font-semibold text-[#0c2e1b] hover:underline"
           >
             {showPackageScope ? (
               <>
@@ -792,18 +842,20 @@ export function InvoiceForm({
         </div>
 
         {showPackageScope && (
-          <div className="mt-5 space-y-4 border-t border-brand-100 pt-4">
+          <div className="mt-5 space-y-4 border-t border-[#edf2ee] pt-4">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
-                <Label>Package / Deal Title (Optional)</Label>
+                <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">Package / Deal Title (Optional)</Label>
                 <Input
+                  className="mt-1.5"
                   {...register("packageTitle")}
                   placeholder="e.g. Premium NGO Digital Presence Package"
                 />
               </div>
               <div>
-                <Label>Package Subtitle / Tagline (Optional)</Label>
+                <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">Package Subtitle / Tagline (Optional)</Label>
                 <Input
+                  className="mt-1.5"
                   {...register("packageSubtitle")}
                   placeholder="e.g. Complete Digital Setup & Automation"
                 />
@@ -812,45 +864,49 @@ export function InvoiceForm({
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
-                <Label>Social Media / Platforms Included (Optional)</Label>
+                <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">Social Media / Platforms Included (Optional)</Label>
                 <Textarea
                   rows={3}
+                  className="mt-1.5"
                   {...register("platformsIncluded")}
                   placeholder="e.g.&#10;• Facebook&#10;• Instagram&#10;• YouTube"
                 />
-                <p className="mt-1 text-xs text-navy-600/60">
+                <p className="mt-1 text-xs text-[#526b5c]">
                   Enter platforms or channels separated by newlines or commas.
                 </p>
               </div>
 
               <div>
-                <Label>Custom Payment Terms (Optional)</Label>
+                <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">Custom Payment Terms (Optional)</Label>
                 <Textarea
                   rows={3}
+                  className="mt-1.5"
                   {...register("paymentTermsText")}
                   placeholder="e.g. 100% Advance Payment: ₹20,000&#10;Project development and setup work will commence after receipt of the full advance payment."
                 />
-                <p className="mt-1 text-xs text-navy-600/60">
+                <p className="mt-1 text-xs text-[#526b5c]">
                   Specify milestone or advance terms to display on the invoice.
                 </p>
               </div>
             </div>
 
             <div>
-              <Label>Package Includes / Deliverables Checklist (Optional)</Label>
+              <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">Package Includes / Deliverables Checklist (Optional)</Label>
               <Textarea
                 rows={5}
+                className="mt-1.5"
                 {...register("packageInclusions")}
                 placeholder="e.g.&#10;• Premium NGO website&#10;• Professional social media setup&#10;• Google My Business setup&#10;• WhatsApp integration&#10;• AI chatbot integration&#10;• Mobile-responsive website&#10;• Contact & enquiry forms&#10;• Basic SEO setup&#10;• Google Maps integration&#10;• AI-powered visitor assistance"
               />
-              <p className="mt-1 text-xs text-navy-600/60">
+              <p className="mt-1 text-xs text-[#526b5c]">
                 List key features and deliverables included in this package (each line becomes a bullet point).
               </p>
             </div>
 
             <div>
-              <Label>Special Offer Note / Disclaimer (Optional)</Label>
+              <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">Special Offer Note / Disclaimer (Optional)</Label>
               <Input
+                className="mt-1.5"
                 {...register("specialOfferNote")}
                 placeholder="e.g. Special Offer: ₹20,000 only · Third-party charges, if applicable, are separate."
               />
@@ -859,14 +915,13 @@ export function InvoiceForm({
         )}
       </Card>
 
-      {/* GST + Payment */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <Card>
-          <h2 className="mb-4 text-base font-bold text-white">GST</h2>
-          <div className="mb-4 flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
+        <Card className="bg-white border border-[#e1ece3] shadow-sm rounded-2xl p-6">
+          <h2 className="mb-4 text-base font-bold text-[#0c2317]">GST</h2>
+          <div className="mb-4 flex items-center justify-between rounded-xl border border-[#e1ece3] bg-[#f9fbf9] px-4 py-3">
             <div>
-              <p className="text-sm font-semibold text-white">Apply GST</p>
-              <p className="text-xs text-slate-400">
+              <p className="text-sm font-semibold text-[#0c2317]">Apply GST</p>
+              <p className="text-xs text-[#526b5c]">
                 Default is 18% — toggle off to generate a non-GST invoice
               </p>
             </div>
@@ -878,11 +933,11 @@ export function InvoiceForm({
                   type="button"
                   onClick={() => f.onChange(!f.value)}
                   className={`relative h-6 w-11 rounded-full transition ${
-                    f.value ? "bg-amber-500 shadow-md shadow-amber-500/20" : "bg-white/20"
+                    f.value ? "bg-[#0c2e1b] shadow-xs" : "bg-[#d2ded5]"
                   }`}
                 >
                   <span
-                    className={`absolute top-0.5 h-5 w-5 rounded-full bg-black shadow transition ${
+                    className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition ${
                       f.value ? "left-5" : "left-0.5"
                     }`}
                   />
@@ -891,24 +946,25 @@ export function InvoiceForm({
             />
           </div>
           <div>
-            <Label>Default GST %</Label>
+            <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">Default GST %</Label>
             <Input
               type="number"
               step="0.01"
               min="0"
               max="100"
+              className="mt-1.5"
               disabled={!gstEnabled}
               {...register("gstPercent")}
             />
           </div>
         </Card>
 
-        <Card>
-          <h2 className="mb-4 text-base font-semibold text-navy-900">Payment</h2>
+        <Card className="bg-white border border-[#e1ece3] shadow-sm rounded-2xl p-6">
+          <h2 className="mb-4 text-base font-bold text-[#0c2317]">Payment</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <Label>Payment Method</Label>
-              <Select {...register("paymentMethod")}>
+              <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">Payment Method</Label>
+              <Select {...register("paymentMethod")} className="mt-1.5">
                 <option value="UPI">UPI</option>
                 <option value="Bank Transfer">Bank Transfer</option>
                 <option value="Card">Card</option>
@@ -917,30 +973,28 @@ export function InvoiceForm({
               </Select>
             </div>
             <div>
-              <Label>UPI ID (Optional)</Label>
-              <Input {...register("upiId")} placeholder="yourupi@bank" />
+              <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">UPI ID (Optional)</Label>
+              <Input {...register("upiId")} placeholder="yourupi@bank" className="mt-1.5" />
             </div>
             <div>
-              <Label>Transaction / Reference No. (Optional)</Label>
-              <Input {...register("transactionRef")} />
+              <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">Transaction / Reference No. (Optional)</Label>
+              <Input {...register("transactionRef")} className="mt-1.5" />
             </div>
             <div>
-              <Label>Amount Paid (₹)</Label>
-              <Input type="number" step="0.01" min="0" {...register("amountPaid")} />
+              <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">Amount Paid (₹)</Label>
+              <Input type="number" step="0.01" min="0" {...register("amountPaid")} className="mt-1.5" />
             </div>
           </div>
         </Card>
       </div>
 
-      {/* Internal Notes */}
-      <Card>
-        <Label>Internal Notes (Optional - not shown on client PDF)</Label>
-        <Textarea {...register("notes")} placeholder="Optional private internal notes" />
+      <Card className="bg-white border border-[#e1ece3] shadow-sm rounded-2xl p-6">
+        <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c]">Internal Notes (Optional - not shown on client PDF)</Label>
+        <Textarea {...register("notes")} placeholder="Optional private internal notes" className="mt-1.5" />
       </Card>
 
-      {/* Totals summary */}
-      <Card className="border-amber-500/30 bg-gradient-to-br from-amber-500/10 via-[#0e1320] to-[#080b11]">
-        <h2 className="mb-4 text-base font-bold text-white">Invoice Summary</h2>
+      <Card className="bg-white border border-[#e1ece3] shadow-sm rounded-2xl p-6">
+        <h2 className="mb-4 text-base font-bold text-[#0c2317]">Invoice Summary</h2>
         <div className="grid grid-cols-2 gap-y-3 text-sm sm:grid-cols-4">
           <SummaryItem label="Total Value (Subtotal)" value={formatINR(totals.subtotal)} />
           <SummaryItem
@@ -954,15 +1008,15 @@ export function InvoiceForm({
             value={formatINR(totals.gstAmount)}
           />
         </div>
-        <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 px-5 py-3.5 text-black shadow-lg shadow-amber-500/20">
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-[#0c2e1b] px-5 py-3.5 text-[#f0c34e] shadow-md shadow-[#0c2e1b]/20">
           <span className="text-sm font-bold uppercase tracking-wider">Grand Total</span>
           <span className="text-2xl font-black">{formatINR(totals.grandTotal)}</span>
         </div>
-        <div className="mt-4 grid grid-cols-2 gap-y-2 text-sm border-t border-white/10 pt-3">
+        <div className="mt-4 grid grid-cols-2 gap-y-2 text-sm border-t border-[#edf2ee] pt-3">
           <SummaryItem label="Amount Paid" value={formatINR(totals.amountPaid)} />
           <SummaryItem label="Balance Due" value={formatINR(totals.balanceDue)} />
         </div>
-        <p className="mt-3 text-xs italic text-slate-400">{numberToWordsINR(totals.grandTotal)}</p>
+        <p className="mt-3 text-xs italic text-[#526b5c]">{numberToWordsINR(totals.grandTotal)}</p>
       </Card>
 
       <div className="flex justify-end gap-3 pb-8">
@@ -997,8 +1051,8 @@ function SummaryItem({
 }) {
   return (
     <div>
-      <p className="text-xs text-slate-400 font-medium">{label}</p>
-      <p className={`text-base font-bold ${highlight ? "text-emerald-300" : "text-white"}`}>{value}</p>
+      <p className="text-xs text-[#526b5c] font-medium">{label}</p>
+      <p className={`text-base font-bold ${highlight ? "text-[#0c2e1b]" : "text-[#0c2317]"}`}>{value}</p>
     </div>
   );
 }

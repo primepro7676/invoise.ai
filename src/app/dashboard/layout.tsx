@@ -11,11 +11,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
   if (!session) redirect("/login");
 
   return (
-    <div className="relative min-h-screen bg-[#080b11] text-slate-100 antialiased selection:bg-amber-500/30 selection:text-amber-200">
-      {/* Subtle ambient lighting for glassy refraction */}
-      <div className="pointer-events-none fixed -left-40 top-0 h-[36rem] w-[36rem] rounded-full bg-amber-500/5 blur-[160px]" />
-      <div className="pointer-events-none fixed right-0 top-20 h-[36rem] w-[36rem] rounded-full bg-blue-500/5 blur-[180px]" />
-      <div className="pointer-events-none fixed bottom-0 left-1/3 h-[32rem] w-[32rem] rounded-full bg-emerald-500/5 blur-[160px]" />
+    <div className="relative min-h-screen bg-[#f4f7f4] text-[#0c2317] antialiased selection:bg-[#0c2e1b]/20 selection:text-[#0c2e1b]">
+      {/* Subtle ambient lighting for light canvas */}
+      <div className="pointer-events-none fixed -left-40 top-0 h-[36rem] w-[36rem] rounded-full bg-emerald-500/[0.04] blur-[160px]" />
+      <div className="pointer-events-none fixed right-0 top-20 h-[36rem] w-[36rem] rounded-full bg-amber-500/[0.03] blur-[180px]" />
 
       <div className="relative z-10 flex min-h-screen">
         <Sidebar />

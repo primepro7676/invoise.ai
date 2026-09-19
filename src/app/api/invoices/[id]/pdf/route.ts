@@ -3,6 +3,7 @@ import { renderToBuffer } from "@react-pdf/renderer";
 import { prisma } from "@/lib/prisma";
 import { InvoiceDocument } from "@/lib/pdf/InvoiceDocument";
 import { parseInvoiceNotes } from "@/lib/validation";
+import { resolveImageToDataUri } from "@/lib/pdf/resolve-image";
 import React from "react";
 
 export const runtime = "nodejs";
@@ -54,6 +55,13 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
   const packageMeta = parseInvoiceNotes(invoice.notes);
 
+  const [primeproLogoUrl, fueloLogoUrl, qrCodeUrl, signatureUrl] = await Promise.all([
+    resolveImageToDataUri(settings.primeproLogoUrl, "defaults/primepro-logo.png"),
+    resolveImageToDataUri(settings.fueloLogoUrl, "defaults/fuelo-logo.png"),
+    resolveImageToDataUri(settings.qrCodeUrl, "defaults/qr-scanner.jpeg"),
+    resolveImageToDataUri(settings.signatureUrl, "defaults/signature.png"),
+  ]);
+
   const doc = React.createElement(InvoiceDocument, {
     invoiceNumber: invoice.invoiceNumber,
     invoiceDate: invoice.invoiceDate.toISOString(),
@@ -75,7 +83,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       primeproPhone: settings.primeproPhone,
       primeproWhatsapp: settings.primeproWhatsapp,
       primeproEmail: settings.primeproEmail,
-      primeproLogoUrl: toAbsolute(settings.primeproLogoUrl, origin),
+      primeproLogoUrl,
       fueloName: settings.fueloName,
       fueloTagline: settings.fueloTagline,
       fueloCIN: settings.fueloCIN,
@@ -84,10 +92,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       fueloPhone: settings.fueloPhone,
       fueloWhatsapp: settings.fueloWhatsapp,
       fueloEmail: settings.fueloEmail,
-      fueloLogoUrl: toAbsolute(settings.fueloLogoUrl, origin),
+      fueloLogoUrl,
       upiId: settings.upiId,
-      qrCodeUrl: toAbsolute(settings.qrCodeUrl, origin),
-      signatureUrl: toAbsolute(settings.signatureUrl, origin),
+      qrCodeUrl,
+      signatureUrl,
       signatoryLine1: settings.signatoryLine1,
       signatoryLine2: settings.signatoryLine2,
       footerNote: settings.footerNote,

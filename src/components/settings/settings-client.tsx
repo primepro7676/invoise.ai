@@ -4,7 +4,7 @@ import * as React from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, Save, Check } from "lucide-react";
+import { Loader2, Save, Check, Building2, CreditCard, Sparkles } from "lucide-react";
 import { companySettingsSchema, type CompanySettingsFormValues } from "@/lib/validation";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -56,8 +56,16 @@ export function SettingsClient({ settings }: { settings: SettingsData }) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <Card>
-          <h2 className="mb-4 text-base font-semibold text-navy-900">PrimePro Technologies AI LLC</h2>
+        <Card className="bg-white border border-[#e1ece3] shadow-sm rounded-2xl p-6">
+          <div className="mb-4 flex items-center gap-2.5 border-b border-[#e1ece3] pb-3.5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0c2e1b]/10 border border-[#0c2e1b]/20 text-[#0c2e1b]">
+              <Building2 className="h-5 w-5" />
+            </div>
+            <div>
+              <h2 className="text-base font-black text-[#0c2317]">PrimePro Technologies AI LLC</h2>
+              <span className="text-xs font-semibold text-[#526b5c]">USA Headquarters Details</span>
+            </div>
+          </div>
           <div className="space-y-4">
             <ImageUploadField
               label="PrimePro Logo"
@@ -77,8 +85,16 @@ export function SettingsClient({ settings }: { settings: SettingsData }) {
           </div>
         </Card>
 
-        <Card>
-          <h2 className="mb-4 text-base font-semibold text-navy-900">Fuelo Technologies OPC Pvt Ltd</h2>
+        <Card className="bg-white border border-[#e1ece3] shadow-sm rounded-2xl p-6">
+          <div className="mb-4 flex items-center gap-2.5 border-b border-[#e1ece3] pb-3.5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0c2e1b]/10 border border-[#0c2e1b]/20 text-[#0c2e1b]">
+              <Building2 className="h-5 w-5" />
+            </div>
+            <div>
+              <h2 className="text-base font-black text-[#0c2317]">Fuelo Technologies OPC Pvt Ltd</h2>
+              <span className="text-xs font-semibold text-[#526b5c]">India Office Details</span>
+            </div>
+          </div>
           <div className="space-y-4">
             <ImageUploadField
               label="Fuelo Logo"
@@ -99,23 +115,31 @@ export function SettingsClient({ settings }: { settings: SettingsData }) {
         </Card>
       </div>
 
-      <Card>
-        <h2 className="mb-4 text-base font-semibold text-navy-900">Payment & Signature</h2>
+      <Card className="bg-white border border-[#e1ece3] shadow-sm rounded-2xl p-6">
+        <div className="mb-4 flex items-center gap-2.5 border-b border-[#e1ece3] pb-3.5">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0c2e1b]/10 border border-[#0c2e1b]/20 text-[#0c2e1b]">
+            <CreditCard className="h-5 w-5" />
+          </div>
+          <div>
+            <h2 className="text-base font-black text-[#0c2317]">Payment, Tax & Signature</h2>
+            <span className="text-xs font-semibold text-[#526b5c]">Default banking, QR scan, and signatory settings</span>
+          </div>
+        </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Field label="Default UPI ID" {...register("upiId")} />
           <Field label="Default GST %" type="number" step="0.01" {...register("defaultGstPercent")} />
           <Field label="Signature Line 1" {...register("signatoryLine1")} />
           <Field label="Signature Line 2" {...register("signatoryLine2")} />
         </div>
-        <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="mt-5 grid grid-cols-1 gap-6 sm:grid-cols-2 pt-4 border-t border-[#e1ece3]">
           <ImageUploadField
-            label="Payment QR Code"
+            label="Payment QR Code (Scanner)"
             folder="qr"
             currentUrl={assets.qrCodeUrl}
             onUploaded={(url) => setAssets((a) => ({ ...a, qrCodeUrl: url }))}
           />
           <ImageUploadField
-            label="Authorized Signature"
+            label="Authorized Signature (Stamp / Sign)"
             folder="signatures"
             currentUrl={assets.signatureUrl}
             onUploaded={(url) => setAssets((a) => ({ ...a, signatureUrl: url }))}
@@ -123,15 +147,23 @@ export function SettingsClient({ settings }: { settings: SettingsData }) {
         </div>
       </Card>
 
-      <Card>
-        <h2 className="mb-4 text-base font-semibold text-navy-900">Footer Note</h2>
-        <Field label="Shown at the bottom of every PDF page" {...register("footerNote")} />
+      <Card className="bg-white border border-[#e1ece3] shadow-sm rounded-2xl p-6">
+        <div className="mb-4 flex items-center gap-2.5 border-b border-[#e1ece3] pb-3.5">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0c2e1b]/10 border border-[#0c2e1b]/20 text-[#0c2e1b]">
+            <Sparkles className="h-5 w-5" />
+          </div>
+          <div>
+            <h2 className="text-base font-black text-[#0c2317]">Footer Note</h2>
+            <span className="text-xs font-semibold text-[#526b5c]">Shown at the bottom of every PDF page</span>
+          </div>
+        </div>
+        <Field label="PDF Footer Text" {...register("footerNote")} />
       </Card>
 
       <div className="flex justify-end pb-8">
-        <Button type="submit" disabled={saving}>
-          {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : saved ? <Check className="h-4 w-4" /> : <Save className="h-4 w-4" />}
-          {saved ? "Saved" : "Save Settings"}
+        <Button type="submit" disabled={saving} className="font-bold shadow-md gap-2">
+          {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : saved ? <Check className="h-4 w-4 text-emerald-300" /> : <Save className="h-4 w-4" />}
+          {saved ? "Saved Successfully!" : "Save All Settings"}
         </Button>
       </div>
     </form>
@@ -143,7 +175,7 @@ const Field = React.forwardRef<
   { label: string } & React.InputHTMLAttributes<HTMLInputElement>
 >(({ label, ...props }, ref) => (
   <div>
-    <Label>{label}</Label>
+    <Label className="text-xs font-bold uppercase tracking-wider text-[#526b5c] mb-1.5 block">{label}</Label>
     <Input ref={ref} {...props} />
   </div>
 ));

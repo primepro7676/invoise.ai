@@ -18,8 +18,8 @@ export default async function ServicesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-navy-900">Services</h1>
-        <p className="text-sm text-navy-600/70">Manage service categories. Packages & pricing are managed separately.</p>
+        <h1 className="text-2xl sm:text-3xl font-black text-[#0c2317] tracking-tight">Services</h1>
+        <p className="mt-1 text-xs sm:text-sm font-medium text-[#526b5c]">Manage service categories. Packages & pricing are managed separately.</p>
       </div>
       <ServicesClient
         initialCategories={categories.map((c: CategoryRow) => ({
@@ -32,3 +32,4 @@ export default async function ServicesPage() {
     </div>
   );
 }
+

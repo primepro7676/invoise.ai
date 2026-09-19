@@ -1,11 +1,15 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { formatINR, formatDate } from "@/lib/calculations";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { formatINR, formatDate } from "@/lib/calculations";
 import { InvoiceFilters } from "@/components/invoice/invoice-filters";
 import { InvoiceListActions } from "@/components/invoice/invoice-list-actions";
+import { StatusBadge } from "@/components/invoice/status-badge";
+import { Prisma } from "@prisma/client";
+
+export const dynamic = "force-dynamic";
 
 export default async function InvoicesPage({
   searchParams,
@@ -13,20 +17,23 @@ export default async function InvoicesPage({
   searchParams: Promise<{ q?: string; status?: string }>;
 }) {
   const { q, status } = await searchParams;
+
+  const where: Prisma.InvoiceWhereInput = {};
+  if (status && status !== "ALL") {
+    where.paymentStatus = status as Prisma.EnumPaymentStatusFilter;
+  }
+  if (q && q.trim()) {
+    where.OR = [
+      { invoiceNumber: { contains: q } },
+      { customer: { companyName: { contains: q } } },
+      { customer: { contactPerson: { contains: q } } },
+      { customer: { email: { contains: q } } },
+      { customer: { phone: { contains: q } } },
+    ];
+  }
+
   const invoices = await prisma.invoice.findMany({
-    where: {
-      AND: [
-        status ? { paymentStatus: status as never } : {},
-        q
-          ? {
-              OR: [
-                { invoiceNumber: { contains: q } },
-                { customer: { companyName: { contains: q } } },
-              ],
-            }
-          : {},
-      ],
-    },
+    where,
     include: { customer: true },
     orderBy: { createdAt: "desc" },
   });
@@ -44,11 +51,11 @@ export default async function InvoicesPage({
     <div className="space-y-6 pb-12">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Invoices</h1>
-          <p className="mt-1 text-sm text-slate-400">{invoices.length} total generated invoices</p>
+          <h1 className="text-2xl sm:text-3xl font-black text-[#0c2317] tracking-tight">Invoices</h1>
+          <p className="mt-1 text-xs sm:text-sm font-medium text-[#526b5c]">{invoices.length} total generated invoices</p>
         </div>
         <Link href="/dashboard/invoices/new">
-          <Button>
+          <Button className="font-bold shadow-sm gap-1.5">
             <Plus className="h-4 w-4" /> Create Invoice
           </Button>
         </Link>
@@ -62,41 +69,41 @@ export default async function InvoicesPage({
 
       <InvoiceFilters defaultQuery={q || ""} defaultStatus={status || ""} />
 
-      <Card>
+      <Card className="bg-white border border-[#e1ece3] shadow-sm rounded-2xl p-5">
         {invoices.length === 0 ? (
-          <p className="py-12 text-center text-sm text-slate-500">No invoices found matching criteria.</p>
+          <p className="py-12 text-center text-sm font-semibold text-[#526b5c]">No invoices found matching criteria.</p>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto rounded-xl border border-[#e1ece3]">
             <table className="w-full text-xs">
               <thead>
-                <tr className="border-b border-white/10 text-left uppercase text-slate-400">
-                  <th className="pb-3 pr-4 font-semibold">Invoice #</th>
-                  <th className="pb-3 pr-4 font-semibold">Customer / Company</th>
-                  <th className="pb-3 pr-4 font-semibold">Date</th>
-                  <th className="pb-3 pr-4 font-semibold">Total Amount</th>
-                  <th className="pb-3 pr-4 font-semibold">Paid</th>
-                  <th className="pb-3 pr-4 font-semibold">Balance Due</th>
-                  <th className="pb-3 pr-4 font-semibold">Status</th>
-                  <th className="pb-3 pr-4 text-right font-semibold">Actions</th>
+                <tr className="border-b border-[#e1ece3] bg-[#f4f7f4] text-left text-[11px] font-bold uppercase tracking-wider text-[#526b5c]">
+                  <th className="py-3 px-4">Invoice #</th>
+                  <th className="py-3 px-4">Customer / Company</th>
+                  <th className="py-3 px-4">Date</th>
+                  <th className="py-3 px-4">Total Amount</th>
+                  <th className="py-3 px-4">Paid</th>
+                  <th className="py-3 px-4">Balance Due</th>
+                  <th className="py-3 px-4">Status</th>
+                  <th className="py-3 px-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
+              <tbody className="divide-y divide-[#e1ece3] bg-white">
                 {invoices.map((inv) => (
-                  <tr key={inv.id} className="transition hover:bg-white/[0.03]">
-                    <td className="py-3 pr-4 font-semibold text-amber-400">
+                  <tr key={inv.id} className="transition-colors hover:bg-[#f4f7f4]">
+                    <td className="py-3.5 px-4 font-black text-[#0c2e1b]">
                       <Link href={`/dashboard/invoices/${inv.id}`} className="hover:underline">
                         {inv.invoiceNumber}
                       </Link>
                     </td>
-                    <td className="py-3 pr-4 font-medium text-white">{inv.customer.companyName}</td>
-                    <td className="py-3 pr-4 text-slate-400">{formatDate(inv.invoiceDate)}</td>
-                    <td className="py-3 pr-4 font-bold text-white">{formatINR(inv.grandTotal)}</td>
-                    <td className="py-3 pr-4 font-semibold text-emerald-400">{formatINR(inv.amountPaid)}</td>
-                    <td className="py-3 pr-4 font-semibold text-amber-300">{formatINR(inv.balanceDue)}</td>
-                    <td className="py-3 pr-4">
+                    <td className="py-3.5 px-4 font-bold text-[#0c2317]">{inv.customer.companyName}</td>
+                    <td className="py-3.5 px-4 text-[#526b5c] font-medium">{formatDate(inv.invoiceDate)}</td>
+                    <td className="py-3.5 px-4 font-black text-[#0c2317]">{formatINR(inv.grandTotal)}</td>
+                    <td className="py-3.5 px-4 font-bold text-[#0c2e1b]">{formatINR(inv.amountPaid)}</td>
+                    <td className="py-3.5 px-4 font-bold text-[#b45309]">{formatINR(inv.balanceDue)}</td>
+                    <td className="py-3.5 px-4">
                       <StatusBadge status={inv.paymentStatus} />
                     </td>
-                    <td className="py-3 pr-4 text-right">
+                    <td className="py-3.5 px-4 text-right">
                       <InvoiceListActions
                         invoiceId={inv.id}
                         invoiceNumber={inv.invoiceNumber}
@@ -129,33 +136,15 @@ function Mini({
   due?: boolean;
 }) {
   return (
-    <Card className="py-4 border-white/10 bg-[#0e1320]/80 backdrop-blur-xl">
-      <p className="text-xs text-slate-400 font-medium uppercase tracking-wider">{label}</p>
+    <Card className="py-4 px-5 border border-[#e1ece3] bg-white rounded-2xl shadow-sm">
+      <p className="text-xs text-[#526b5c] font-bold uppercase tracking-wider">{label}</p>
       <p
         className={`mt-1 text-2xl font-black ${
-          highlight ? "text-emerald-400" : due ? "text-amber-400" : "text-white"
+          highlight ? "text-[#0c2e1b]" : due ? "text-[#b45309]" : "text-[#0c2317]"
         }`}
       >
         {value}
       </p>
     </Card>
-  );
-}
-
-function StatusBadge({ status }: { status: string }) {
-  const styles: Record<string, string> = {
-    PAID: "border-emerald-500/30 bg-emerald-500/15 text-emerald-300",
-    UNPAID: "border-amber-500/30 bg-amber-500/15 text-amber-300",
-    PARTIALLY_PAID: "border-blue-500/30 bg-blue-500/15 text-blue-300",
-    OVERDUE: "border-red-500/30 bg-red-500/15 text-red-300",
-  };
-  return (
-    <span
-      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
-        styles[status] || "border-slate-500/30 bg-slate-500/15 text-slate-300"
-      }`}
-    >
-      {status.replace("_", " ")}
-    </span>
   );
 }
