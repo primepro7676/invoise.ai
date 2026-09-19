@@ -4,7 +4,6 @@ import { useState, type FormEvent } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Lock, Mail, Loader2, ArrowRight, Sparkles, ShieldCheck } from "lucide-react";
-import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -145,16 +144,6 @@ export default function LoginPage() {
               </button>
             </div>
           </form>
-
-          <div className="mt-5 border-t border-[#e1ece3] pt-4 text-center text-xs font-semibold text-[#526b5c]">
-            Need to create an account?{" "}
-            <Link
-              href="/signup"
-              className="font-bold text-[#0c2e1b] hover:text-[#e5ba55] hover:underline transition"
-            >
-              Sign Up
-            </Link>
-          </div>
         </div>
 
         <p className="mt-6 text-center text-xs font-medium text-[#526b5c]">
